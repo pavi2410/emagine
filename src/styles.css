@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "@radix-ui/themes/styles.css";
 
 body {
   @apply m-0;

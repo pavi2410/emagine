@@ -1,5 +1,6 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { Theme } from '@radix-ui/themes'
+import '@radix-ui/themes/styles.css'
 
 import appCss from '../styles.css?url'
 
