@@ -3,7 +3,7 @@ import { PaperPlaneIcon } from '@radix-ui/react-icons'
 import { useState } from 'react'
 import { useStore } from '@nanostores/react'
 import { generation } from '../../stores/generation'
-import { GenerationStatus } from './GenerationStatus'
+import { AIReasoning } from './AIReasoning'
 import { useAppGeneration } from '../../hooks/useAppGeneration'
 
 export function PromptBar() {
@@ -22,8 +22,8 @@ export function PromptBar() {
 
   return (
     <Box className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent backdrop-blur-sm">
-      <Flex direction="column" gap="2" className="max-w-3xl mx-auto">
-        {$generation.isGenerating && <GenerationStatus />}
+      <Flex direction="column" gap="3" className="max-w-3xl mx-auto">
+        <AIReasoning />
 
         <form onSubmit={handleSubmit}>
           <Flex gap="2" align="center">

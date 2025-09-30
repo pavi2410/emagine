@@ -24,8 +24,8 @@ export function Desktop() {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Desktop Icons */}
-      <Box className="absolute top-8 left-8 flex flex-col gap-6">
+      {/* Desktop Icons - Right Side */}
+      <Box className="absolute top-8 right-8 flex flex-col gap-6 items-end">
         {$apps.map(app => (
           <DesktopIcon key={app.id} app={app} />
         ))}
