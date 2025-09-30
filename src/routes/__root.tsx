@@ -1,6 +1,4 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanstackDevtools } from '@tanstack/react-devtools'
 import { Theme } from '@radix-ui/themes'
 
 import appCss from '../styles.css?url'
@@ -39,17 +37,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <Theme appearance="dark" accentColor="purple" radius="medium">
           {children}
-          <TanstackDevtools
-            config={{
-              position: 'bottom-left',
-            }}
-            plugins={[
-              {
-                name: 'Tanstack Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
+          {/* Devtools disabled for production build */}
         </Theme>
         <Scripts />
       </body>
