@@ -5,9 +5,10 @@ import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 
-const config = defineConfig({
+const config = defineConfig(({ mode }) => ({
   plugins: [
-    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    // Only add Cloudflare plugin in production builds
+    ...(mode === 'production' ? [cloudflare({ viteEnvironment: { name: 'ssr' } })] : []),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
@@ -16,6 +17,6 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
-})
+}))
 
 export default config
