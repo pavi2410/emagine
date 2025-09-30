@@ -58,10 +58,22 @@ export async function uiGeneratorAgent(
       maxTokens: 4000,
     })
 
+    // Strip markdown code blocks if present
+    let cleanHtml = html.trim()
+    if (cleanHtml.startsWith('```html')) {
+      cleanHtml = cleanHtml.replace(/^```html\n?/, '')
+    }
+    if (cleanHtml.startsWith('```')) {
+      cleanHtml = cleanHtml.replace(/^```\n?/, '')
+    }
+    if (cleanHtml.endsWith('```')) {
+      cleanHtml = cleanHtml.replace(/\n?```$/, '')
+    }
+
     return {
       success: true,
       app: {
-        html: html.trim(),
+        html: cleanHtml.trim(),
         name: meta.name,
         icon: meta.icon
       }
