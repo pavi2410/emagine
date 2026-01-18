@@ -116,9 +116,9 @@ export function toggleMaximize(id: string) {
         height: win.height,
       },
       x: 0,
-      y: 40, // Below top bar
+      y: 28, // Below top bar
       width: window.innerWidth,
-      height: window.innerHeight - 40,
+      height: window.innerHeight - 28,
       isMaximized: true,
     })
   }

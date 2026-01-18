@@ -33,19 +33,19 @@ export function DesktopIcon({ app }: DesktopIconProps) {
           direction="column"
           align="center"
           gap="2"
-          className={`w-24 cursor-pointer hover:bg-white/10 rounded-lg p-2 transition-colors ${
+          className={`w-24 cursor-pointer hover:bg-blue-500/25 rounded-lg p-2 transition-colors ${
             hasError ? 'opacity-50' : ''
           }`}
           onDoubleClick={handleDoubleClick}
         >
-          <Box className="text-5xl relative">
+          <Box className="text-5xl relative drop-shadow-lg">
             {isGenerating ? (
               <Spinner size="3" />
             ) : (
               app.icon
             )}
           </Box>
-          <Text size="2" className="text-white text-center break-words">
+          <Text size="2" className="text-white text-center line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
             {app.name}
           </Text>
           {hasError && (
@@ -57,17 +57,17 @@ export function DesktopIcon({ app }: DesktopIconProps) {
       </ContextMenu.Trigger>
 
       <ContextMenu.Portal>
-        <ContextMenu.Content className="min-w-[160px] bg-slate-900/95 backdrop-blur-xl rounded-lg shadow-2xl border border-slate-700/50 py-1.5 z-9999">
+        <ContextMenu.Content className="min-w-[160px] bg-slate-800/90 backdrop-blur-2xl backdrop-saturate-150 rounded-md shadow-[0_10px_40px_rgba(0,0,0,0.4),inset_0_0_0_0.5px_rgba(255,255,255,0.1)] py-1 z-9999">
           <ContextMenu.Item
-            className="px-3 py-2 text-white text-sm cursor-pointer outline-none hover:bg-blue-500/30 rounded-md mx-1 transition-colors"
+            className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
             onSelect={handleOpen}
             disabled={isGenerating}
           >
             Open
           </ContextMenu.Item>
-          <ContextMenu.Separator className="h-px bg-slate-700/50 my-1.5" />
+          <ContextMenu.Separator className="h-px bg-white/10 my-1" />
           <ContextMenu.Item
-            className="px-3 py-2 text-red-400 text-sm cursor-pointer outline-none hover:bg-red-500/20 rounded-md mx-1 transition-colors"
+            className="px-3 py-1.5 text-red-400 text-[13px] cursor-default outline-none data-highlighted:bg-red-500 data-highlighted:text-white rounded mx-1 transition-colors"
             onSelect={handleMoveToTrash}
             disabled={isGenerating}
           >

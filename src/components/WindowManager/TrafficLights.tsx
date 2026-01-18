@@ -18,7 +18,7 @@ export function TrafficLights({
       {/* Close button */}
       <button
         onClick={onClose}
-        className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors flex items-center justify-center"
+        className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff4136] shadow-[inset_0_0_0_0.5px_rgba(0,0,0,0.12),inset_0_-1px_1px_rgba(0,0,0,0.08)] transition-colors flex items-center justify-center"
         title="Close"
       >
         <svg
@@ -36,7 +36,7 @@ export function TrafficLights({
       {/* Minimize button */}
       <button
         onClick={onMinimize}
-        className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors flex items-center justify-center"
+        className="w-3 h-3 rounded-full bg-[#febc2e] hover:bg-[#e5a922] shadow-[inset_0_0_0_0.5px_rgba(0,0,0,0.12),inset_0_-1px_1px_rgba(0,0,0,0.08)] transition-colors flex items-center justify-center"
         title="Minimize"
       >
         <svg
@@ -54,7 +54,7 @@ export function TrafficLights({
       {/* Maximize button */}
       <button
         onClick={onMaximize}
-        className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors flex items-center justify-center"
+        className="w-3 h-3 rounded-full bg-[#28c840] hover:bg-[#22ad38] shadow-[inset_0_0_0_0.5px_rgba(0,0,0,0.12),inset_0_-1px_1px_rgba(0,0,0,0.08)] transition-colors flex items-center justify-center"
         title={isMaximized ? 'Restore' : 'Maximize'}
       >
         <svg

@@ -54,10 +54,10 @@ export function Window({ window: win, app }: WindowProps) {
       disableDragging={win.isMaximized}
       enableResizing={!win.isMaximized}
     >
-      <div className={`h-full w-full flex flex-col bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.1)] overflow-hidden ${win.isMaximized ? 'rounded-none' : 'rounded-xl'}`}>
+      <div className={`h-full w-full flex flex-col bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56),inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden ${win.isMaximized ? 'rounded-none' : 'rounded-[10px]'}`}>
         {/* Title Bar with macOS traffic lights */}
         <div className="window-drag-handle cursor-move shrink-0 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50" onDoubleClick={handleMaximize}>
-          <Flex align="center" className="px-4 py-2.5">
+          <Flex align="center" className="px-4 py-1">
             {/* Traffic Lights */}
             <TrafficLights
               onClose={handleClose}

@@ -16,20 +16,20 @@ export function TrashIcon() {
       direction="column"
       align="center"
       gap="2"
-      className="w-24 cursor-pointer hover:bg-white/10 rounded-lg p-2 transition-colors"
+      className="w-24 cursor-pointer hover:bg-blue-500/25 rounded-lg p-2 transition-colors"
       onDoubleClick={handleDoubleClick}
     >
-      <div className="text-5xl relative">
+      <div className="text-5xl relative drop-shadow-lg">
         {hasItems ? '🗑️' : '🗑️'}
         {hasItems && (
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
             <span className="text-[10px] text-white font-bold">
               {trashedApps.length > 9 ? '9+' : trashedApps.length}
             </span>
           </div>
         )}
       </div>
-      <Text size="2" className="text-white text-center">
+      <Text size="2" className="text-white text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
         Trash
       </Text>
     </Flex>

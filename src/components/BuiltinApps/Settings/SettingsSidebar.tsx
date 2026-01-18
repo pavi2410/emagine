@@ -33,10 +33,10 @@ export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSide
           <button
             key={item.id}
             onClick={() => onSectionChange(item.id)}
-            className={`flex items-center gap-3 px-3 py-2 mx-2 rounded-lg text-left transition-colors ${
+            className={`flex items-center gap-3 px-3 py-2 mx-2 rounded-md text-left transition-colors ${
               isActive
-                ? 'bg-blue-500/30'
-                : 'hover:bg-slate-700/50'
+                ? 'bg-white/10'
+                : 'hover:bg-white/5'
             }`}
           >
             <span className="text-lg">{item.icon}</span>
