@@ -6,6 +6,7 @@ import type { App } from '../../stores/desktop'
 import { closeWindow, updateWindowPosition, updateWindowSize, bringToFront } from '../../stores/windows'
 import { SettingsApp } from '../BuiltinApps/SettingsApp'
 import { TrashApp } from '../BuiltinApps/TrashApp'
+import { ProgressiveContent } from './ProgressiveContent'
 
 interface WindowProps {
   window: WindowState
@@ -21,15 +22,8 @@ function renderAppContent(app: App) {
     return <TrashApp />
   }
 
-  // Render iframe for generated apps
-  return (
-    <iframe
-      sandbox="allow-scripts allow-same-origin"
-      srcDoc={app.html}
-      className="w-full h-full border-0"
-      title={app.name}
-    />
-  )
+  // Use ProgressiveContent for generated apps (supports streaming)
+  return <ProgressiveContent appId={app.id} />
 }
 
 export function Window({ window: win, app }: WindowProps) {

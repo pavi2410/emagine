@@ -1,4 +1,5 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
+import { settings } from '../stores/settings'
 
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || ''
 
@@ -6,14 +7,19 @@ export const openrouter = createOpenRouter({
   apiKey: OPENROUTER_API_KEY,
 })
 
-// Using Grok 4 Fast exclusively for testing
-// This model is free on OpenRouter (limited time)
-const GROK_4_FAST_FREE = 'x-ai/grok-4-fast:free'
+/**
+ * Get the currently selected model from settings
+ */
+export function getCurrentModel() {
+  const { selectedModel } = settings.get()
+  return selectedModel
+}
 
+// Legacy MODELS object - now dynamically reads from settings
 export const MODELS = {
-  ORCHESTRATOR: GROK_4_FAST_FREE,
-  PLANNER: GROK_4_FAST_FREE,
-  UI_GENERATOR: GROK_4_FAST_FREE,
-  LOGIC_GENERATOR: GROK_4_FAST_FREE,
-  FALLBACK: GROK_4_FAST_FREE,
+  get ORCHESTRATOR() { return getCurrentModel() },
+  get PLANNER() { return getCurrentModel() },
+  get UI_GENERATOR() { return getCurrentModel() },
+  get LOGIC_GENERATOR() { return getCurrentModel() },
+  get FALLBACK() { return getCurrentModel() },
 } as const
