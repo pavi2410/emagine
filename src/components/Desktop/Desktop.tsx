@@ -2,23 +2,29 @@ import { Box, Flex, Button, Text } from '@radix-ui/themes'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { appsQueryOptions } from '../../queries/apps'
+import { settingsQueryOptions } from '../../queries/settings'
 import { DesktopIcon } from './DesktopIcon'
 import { WindowManager } from '../WindowManager/WindowManager'
 import { PromptBar } from '../PromptBar/PromptBar'
 import { signOut, useSession } from '../../lib/auth-client'
 import { resetUIState } from '../../stores/ui'
+import { getWallpaperStyle } from '../OOBE/data/wallpapers'
 
 export function Desktop() {
   const { data: apps = [] } = useQuery(appsQueryOptions)
   const { data: session } = useSession()
+  const { data: settings } = useQuery(settingsQueryOptions)
 
-  // Generate random wallpaper from static.photos
-  const wallpaperUrl = useMemo(() => {
-    return `https://static.photos/minimal/1200x630`
-  }, [])
+  // Get wallpaper style from user settings
+  const wallpaperStyle = useMemo(() => {
+    return getWallpaperStyle(settings?.wallpaper || 'gradient-purple')
+  }, [settings?.wallpaper])
 
   const handleSignOut = async () => {
     resetUIState()
+    // Clear remembered user on sign out
+    localStorage.removeItem('emagine_remembered_email')
+    localStorage.removeItem('emagine_remembered_name')
     await signOut()
     window.location.reload()
   }
@@ -26,12 +32,7 @@ export function Desktop() {
   return (
     <Box
       className="relative w-screen h-screen overflow-hidden"
-      style={{
-        backgroundImage: `url(${wallpaperUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
+      style={wallpaperStyle}
     >
       {/* Top Bar */}
       <Flex

@@ -4,6 +4,10 @@ export interface UserSettings {
   selectedModel: string
   enableThinking: boolean
   theme: string
+  hasCompletedOOBE: boolean
+  wallpaper: string
+  accentColor: string
+  avatar: string
 }
 
 export const AVAILABLE_MODELS = {
@@ -33,6 +37,10 @@ const DEFAULT_SETTINGS: UserSettings = {
   selectedModel: 'mistralai/devstral-2512:free',
   enableThinking: false,
   theme: 'dark',
+  hasCompletedOOBE: false,
+  wallpaper: 'gradient-purple',
+  accentColor: 'purple',
+  avatar: 'gradient-1',
 }
 
 export const settingsQueryOptions = queryOptions({

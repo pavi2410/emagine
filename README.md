@@ -13,14 +13,14 @@ AI-powered generative desktop environment. Describe what you want, get a working
 
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Add your OpenRouter API key
 cp .env.example .env.development
 # Edit .env.development and add your key
 
 # Start dev server
-npm run dev
+bun run dev
 ```
 
 Visit http://localhost:3000

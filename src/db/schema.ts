@@ -57,6 +57,12 @@ export const userSettings = pgTable('user_settings', {
   selectedModel: text('selected_model').default('mistralai/devstral-2512:free').notNull(),
   enableThinking: boolean('enable_thinking').default(false).notNull(),
   theme: text('theme').default('dark').notNull(),
+  // OOBE tracking
+  hasCompletedOOBE: boolean('has_completed_oobe').default(false).notNull(),
+  // Personalization
+  wallpaper: text('wallpaper').default('gradient-purple').notNull(),
+  accentColor: text('accent_color').default('purple').notNull(),
+  avatar: text('avatar').default('gradient-1').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

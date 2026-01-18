@@ -8,6 +8,13 @@
       "when": 1768742825654,
       "tag": "0000_modern_post",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768755618490,
+      "tag": "0001_aromatic_logan",
+      "breakpoints": true
     }
   ]
 }

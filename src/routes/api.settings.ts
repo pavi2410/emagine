@@ -8,6 +8,10 @@ const UpdateSettingsSchema = z.object({
   selectedModel: z.string().optional(),
   enableThinking: z.boolean().optional(),
   theme: z.string().optional(),
+  hasCompletedOOBE: z.boolean().optional(),
+  wallpaper: z.string().optional(),
+  accentColor: z.string().optional(),
+  avatar: z.string().optional(),
 })
 
 export const Route = createFileRoute('/api/settings')({
@@ -41,6 +45,10 @@ export const Route = createFileRoute('/api/settings')({
           selectedModel: settings.selectedModel,
           enableThinking: settings.enableThinking,
           theme: settings.theme,
+          hasCompletedOOBE: settings.hasCompletedOOBE,
+          wallpaper: settings.wallpaper,
+          accentColor: settings.accentColor,
+          avatar: settings.avatar,
         }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
@@ -97,6 +105,10 @@ export const Route = createFileRoute('/api/settings')({
           selectedModel: settings.selectedModel,
           enableThinking: settings.enableThinking,
           theme: settings.theme,
+          hasCompletedOOBE: settings.hasCompletedOOBE,
+          wallpaper: settings.wallpaper,
+          accentColor: settings.accentColor,
+          avatar: settings.avatar,
         }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
