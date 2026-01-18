@@ -1,4 +1,4 @@
-import { map } from 'nanostores'
+import { atom, map } from 'nanostores'
 
 export interface WindowState {
   id: string
@@ -59,5 +59,3 @@ export function bringToFront(id: string) {
     maxZIndex.set(currentMaxZ + 1)
   }
 }
-
-import { atom } from 'nanostores'

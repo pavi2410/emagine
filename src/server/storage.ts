@@ -1,11 +1,12 @@
 import { S3Client } from 'bun'
+import { env } from '../env'
 
 // Initialize S3 client for Railway Bucket
 const s3 = new S3Client({
-  endpoint: process.env.BUCKET_ENDPOINT!,
-  bucket: process.env.BUCKET_NAME!,
-  accessKeyId: process.env.BUCKET_ACCESS_KEY_ID!,
-  secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY!,
+  endpoint: env.BUCKET_ENDPOINT!,
+  bucket: env.BUCKET_NAME!,
+  accessKeyId: env.BUCKET_ACCESS_KEY_ID!,
+  secretAccessKey: env.BUCKET_SECRET_ACCESS_KEY!,
 })
 
 /**
@@ -53,22 +54,22 @@ export async function appHtmlExists(storagePath: string): Promise<boolean> {
 }
 
 /**
- * Save a workspace file to S3 bucket
- * @param workspaceId - The workspace ID
+ * Save a user file to S3 bucket
+ * @param userId - The user ID
  * @param path - The virtual file path
  * @param content - The file content
  * @param mimeType - The MIME type
  * @returns The storage path (S3 key)
  */
-export async function saveWorkspaceFile(
-  workspaceId: string,
+export async function saveUserFile(
+  userId: string,
   path: string,
   content: string | Uint8Array,
   mimeType: string
 ): Promise<string> {
   // Normalize path (remove leading slash)
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path
-  const storagePath = `workspaces/${workspaceId}/${normalizedPath}`
+  const storagePath = `users/${userId}/files/${normalizedPath}`
 
   await s3.write(storagePath, content, {
     type: mimeType,
@@ -78,19 +79,19 @@ export async function saveWorkspaceFile(
 }
 
 /**
- * Get a workspace file from S3 bucket
+ * Get a user file from S3 bucket
  * @param storagePath - The S3 key to read from
  * @returns The file content as ArrayBuffer
  */
-export async function getWorkspaceFile(storagePath: string): Promise<ArrayBuffer> {
+export async function getUserFile(storagePath: string): Promise<ArrayBuffer> {
   const file = s3.file(storagePath)
   return await file.arrayBuffer()
 }
 
 /**
- * Delete a workspace file from S3 bucket
+ * Delete a user file from S3 bucket
  * @param storagePath - The S3 key to delete
  */
-export async function deleteWorkspaceFile(storagePath: string): Promise<void> {
+export async function deleteUserFile(storagePath: string): Promise<void> {
   await s3.delete(storagePath)
 }

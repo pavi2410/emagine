@@ -1,12 +1,13 @@
 import { useStore } from '@nanostores/react'
+import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence } from 'motion/react'
 import { windows } from '../../stores/windows'
-import { apps } from '../../stores/desktop'
+import { appsQueryOptions } from '../../queries/apps'
 import { MobileWindow } from './MobileWindow'
 
 export function MobileWindowManager() {
   const $windows = useStore(windows)
-  const $apps = useStore(apps)
+  const { data: apps = [] } = useQuery(appsQueryOptions)
 
   const windowList = Object.values($windows)
   // On mobile, only show the top window (last opened)
@@ -14,7 +15,7 @@ export function MobileWindowManager() {
 
   if (!topWindow) return null
 
-  const app = $apps.find(a => a.id === topWindow.appId)
+  const app = apps.find(a => a.id === topWindow.appId)
   if (!app) return null
 
   return (

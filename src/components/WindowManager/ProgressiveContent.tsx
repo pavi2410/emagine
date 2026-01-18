@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { useStore } from '@nanostores/react'
+import { useQuery } from '@tanstack/react-query'
 import { Box, Flex, Spinner, Text } from '@radix-ui/themes'
-import { apps } from '../../stores/workspace'
-import { api } from '../../lib/api'
+import { appsQueryOptions, getAppUrl } from '../../queries/apps'
 
 interface ProgressiveContentProps {
   appId: string
@@ -15,9 +14,9 @@ interface ProgressiveContentProps {
 export function ProgressiveContent({ appId }: ProgressiveContentProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
-  const $apps = useStore(apps)
+  const { data: apps = [] } = useQuery(appsQueryOptions)
 
-  const app = $apps.find((a) => a.id === appId)
+  const app = apps.find((a) => a.id === appId)
 
   const handleLoad = () => {
     setIsLoading(false)
@@ -95,7 +94,7 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
 
       {/* iframe loads app from server URL */}
       <iframe
-        src={api.getAppUrl(appId)}
+        src={getAppUrl(appId)}
         title={app.name}
         onLoad={handleLoad}
         onError={handleError}

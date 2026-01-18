@@ -1,10 +1,10 @@
 import { Box, Flex, Text } from '@radix-ui/themes'
-import { useStore } from '@nanostores/react'
-import { apps } from '../../stores/desktop'
+import { useQuery } from '@tanstack/react-query'
+import { appsQueryOptions } from '../../queries/apps'
 import { openWindow } from '../../stores/windows'
 
 export function MobileDesktop() {
-  const $apps = useStore(apps)
+  const { data: apps = [] } = useQuery(appsQueryOptions)
 
   return (
     <Box className="h-screen w-screen bg-gradient-to-b from-blue-400 to-purple-500 overflow-hidden">
@@ -23,7 +23,7 @@ export function MobileDesktop() {
       {/* App Grid */}
       <Box className="p-6 pt-12">
         <div className="grid grid-cols-4 gap-6">
-          {$apps.map(app => (
+          {apps.map(app => (
             <button
               key={app.id}
               onClick={() => openWindow(app.id)}

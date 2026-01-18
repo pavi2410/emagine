@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { db } from '../db'
 import * as schema from '../db/schema'
+import { env } from '../env'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -13,6 +14,11 @@ export const auth = betterAuth({
       verification: schema.verifications,
     },
   }),
+  advanced: {
+    database: {
+      generateId: () => crypto.randomUUID(),
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false, // Skip for now, can enable later
@@ -27,8 +33,8 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     'http://localhost:3000',
-    process.env.APP_URL || '',
-  ].filter(Boolean),
+    env.APP_URL,
+  ].filter((url): url is string => Boolean(url)),
 })
 
 // Auth client for server-side usage

@@ -1,9 +1,10 @@
 import { Box, Flex, Text, Select } from '@radix-ui/themes'
-import { useStore } from '@nanostores/react'
-import { settings, setSelectedModel, AVAILABLE_MODELS, type ModelId } from '../../stores/settings'
+import { useQuery } from '@tanstack/react-query'
+import { settingsQueryOptions, useUpdateSettings, AVAILABLE_MODELS, type ModelId } from '../../queries/settings'
 
 export function SettingsApp() {
-  const $settings = useStore(settings)
+  const { data: settings } = useQuery(settingsQueryOptions)
+  const updateSettings = useUpdateSettings()
 
   return (
     <Box className="p-6 h-full overflow-auto bg-slate-900">
@@ -23,8 +24,8 @@ export function SettingsApp() {
               Select Model
             </Text>
             <Select.Root
-              value={$settings.selectedModel}
-              onValueChange={(value) => setSelectedModel(value as ModelId)}
+              value={settings?.selectedModel}
+              onValueChange={(value) => updateSettings.mutate({ selectedModel: value as ModelId })}
             >
               <Select.Trigger className="w-full" />
               <Select.Content>
@@ -40,15 +41,15 @@ export function SettingsApp() {
 
           <Box className="bg-slate-700/50 rounded p-3">
             <Text size="2" weight="medium" className="block mb-1">
-              {AVAILABLE_MODELS[$settings.selectedModel].name}
+              {settings?.selectedModel && AVAILABLE_MODELS[settings.selectedModel as ModelId]?.name}
             </Text>
             <Text size="1" className="text-slate-400 block mb-1">
-              Provider: {AVAILABLE_MODELS[$settings.selectedModel].provider}
+              Provider: {settings?.selectedModel && AVAILABLE_MODELS[settings.selectedModel as ModelId]?.provider}
             </Text>
             <Text size="1" className="text-slate-400 block">
-              {AVAILABLE_MODELS[$settings.selectedModel].description}
+              {settings?.selectedModel && AVAILABLE_MODELS[settings.selectedModel as ModelId]?.description}
             </Text>
-            {AVAILABLE_MODELS[$settings.selectedModel].supportsTools && (
+            {settings?.selectedModel && AVAILABLE_MODELS[settings.selectedModel as ModelId]?.supportsTools && (
               <Text size="1" className="text-green-400 block mt-2">
                 ⚡ Supports streaming tools
               </Text>

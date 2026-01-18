@@ -1,11 +1,6 @@
-import { useState } from 'react'
-import { useStore } from '@nanostores/react'
-import {
-  apps,
-  generateApp as generateAppAction,
-  currentWorkspaceId,
-  error as workspaceError,
-} from '../stores/workspace'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { appsQueryOptions, useGenerateApp, subscribeToAppUpdates } from '../queries/apps'
+import { settingsQueryOptions } from '../queries/settings'
 import {
   startGeneration,
   completeGeneration,
@@ -15,53 +10,41 @@ import { openWindow } from '../stores/windows'
 
 /**
  * Custom hook to manage app generation
- * Uses server-side generation API
+ * Uses server-side generation API with TanStack Query
  */
 export function useAppGeneration() {
-  const [error, setError] = useState<string | null>(null)
-  const [isGenerating, setIsGenerating] = useState(false)
-  const $apps = useStore(apps)
-  const $workspaceError = useStore(workspaceError)
-  const $currentWorkspaceId = useStore(currentWorkspaceId)
+  const queryClient = useQueryClient()
+  const { data: apps = [] } = useQuery(appsQueryOptions)
+  const { data: settings } = useQuery(settingsQueryOptions)
+  const generateAppMutation = useGenerateApp()
 
   const generateApp = async (prompt: string) => {
-    if (!$currentWorkspaceId) {
-      setError('No workspace selected')
-      return
-    }
-
     try {
-      setError(null)
-      setIsGenerating(true)
       startGeneration(prompt)
 
-      // Use server-side generation
-      const appId = await generateAppAction(prompt)
-
-      if (!appId) {
-        failGeneration($workspaceError || 'Generation failed')
-        setError($workspaceError || 'Generation failed')
-        return
-      }
+      const { appId } = await generateAppMutation.mutateAsync({
+        prompt,
+        model: settings?.selectedModel,
+      })
 
       // Open window for the new app
       openWindow(appId)
 
-      completeGeneration()
+      // Subscribe to updates
+      subscribeToAppUpdates(appId, queryClient, () => {
+        completeGeneration()
+      })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       failGeneration(message)
-      setError(message)
       console.error('App generation error:', err)
-    } finally {
-      setIsGenerating(false)
     }
   }
 
   return {
     generateApp,
-    error,
-    isGenerating,
-    apps: $apps,
+    error: generateAppMutation.error?.message ?? null,
+    isGenerating: generateAppMutation.isPending,
+    apps,
   }
 }

@@ -1,8 +1,9 @@
 import { Box, Flex, IconButton, Text } from '@radix-ui/themes'
-import { Cross2Icon, ChevronLeftIcon } from '@radix-ui/react-icons'
-import { motion, AnimatePresence } from 'motion/react'
+import { ChevronLeftIcon } from '@radix-ui/react-icons'
+import { motion } from 'motion/react'
 import type { WindowState } from '../../stores/windows'
-import type { App } from '../../stores/desktop'
+import type { App } from '../../queries/apps'
+import { getAppUrl } from '../../queries/apps'
 import { closeWindow } from '../../stores/windows'
 import { SettingsApp } from '../BuiltinApps/SettingsApp'
 import { TrashApp } from '../BuiltinApps/TrashApp'
@@ -22,8 +23,8 @@ function renderAppContent(app: App) {
 
   return (
     <iframe
-      sandbox="allow-scripts allow-same-origin"
-      srcDoc={app.html}
+      sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
+      src={getAppUrl(app.id)}
       className="w-full h-full border-0"
       title={app.name}
     />

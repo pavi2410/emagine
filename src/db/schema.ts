@@ -50,32 +50,21 @@ export const verifications = pgTable('verifications', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
-// Workspaces table (multi-tenancy)
-export const workspaces = pgTable('workspaces', {
+// User settings (persisted preferences)
+export const userSettings = pgTable('user_settings', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
-  slug: text('slug').unique().notNull(),
-  ownerId: uuid('owner_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  settings: jsonb('settings').default({}).$type<Record<string, unknown>>(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull().unique(),
+  selectedModel: text('selected_model').default('mistralai/devstral-2512:free').notNull(),
+  enableThinking: boolean('enable_thinking').default(false).notNull(),
+  theme: text('theme').default('dark').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
-// Workspace members (for sharing)
-export const workspaceMembers = pgTable('workspace_members', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  role: text('role').default('member').notNull().$type<'owner' | 'admin' | 'member'>(),
-  joinedAt: timestamp('joined_at').defaultNow().notNull(),
-}, (table) => [
-  uniqueIndex('workspace_user_idx').on(table.workspaceId, table.userId),
-])
-
 // Apps table (generated applications)
 export const apps = pgTable('apps', {
   id: uuid('id').defaultRandom().primaryKey(),
-  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   name: text('name').notNull(),
   icon: text('icon').notNull(), // emoji
   description: text('description'),
@@ -111,10 +100,10 @@ export const appVersions = pgTable('app_versions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-// Workspace files (for agentic OS file system)
-export const workspaceFiles = pgTable('workspace_files', {
+// User files (for agentic OS file system)
+export const userFiles = pgTable('user_files', {
   id: uuid('id').defaultRandom().primaryKey(),
-  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   path: text('path').notNull(), // Virtual path like '/documents/notes.txt'
   mimeType: text('mime_type').notNull(),
   storagePath: text('storage_path').notNull(),
@@ -122,15 +111,20 @@ export const workspaceFiles = pgTable('workspace_files', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
-  uniqueIndex('workspace_path_idx').on(table.workspaceId, table.path),
+  uniqueIndex('user_path_idx').on(table.userId, table.path),
 ])
 
 // Relations
-export const usersRelations = relations(users, ({ many }) => ({
+export const userSettingsRelations = relations(userSettings, ({ one }) => ({
+  user: one(users, { fields: [userSettings.userId], references: [users.id] }),
+}))
+
+export const usersRelations = relations(users, ({ one, many }) => ({
   accounts: many(accounts),
   sessions: many(sessions),
-  ownedWorkspaces: many(workspaces),
-  memberships: many(workspaceMembers),
+  apps: many(apps),
+  files: many(userFiles),
+  settings: one(userSettings),
 }))
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -141,20 +135,8 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }))
 
-export const workspacesRelations = relations(workspaces, ({ one, many }) => ({
-  owner: one(users, { fields: [workspaces.ownerId], references: [users.id] }),
-  members: many(workspaceMembers),
-  apps: many(apps),
-  files: many(workspaceFiles),
-}))
-
-export const workspaceMembersRelations = relations(workspaceMembers, ({ one }) => ({
-  workspace: one(workspaces, { fields: [workspaceMembers.workspaceId], references: [workspaces.id] }),
-  user: one(users, { fields: [workspaceMembers.userId], references: [users.id] }),
-}))
-
 export const appsRelations = relations(apps, ({ one, many }) => ({
-  workspace: one(workspaces, { fields: [apps.workspaceId], references: [workspaces.id] }),
+  user: one(users, { fields: [apps.userId], references: [users.id] }),
   versions: many(appVersions),
 }))
 
@@ -162,6 +144,6 @@ export const appVersionsRelations = relations(appVersions, ({ one }) => ({
   app: one(apps, { fields: [appVersions.appId], references: [apps.id] }),
 }))
 
-export const workspaceFilesRelations = relations(workspaceFiles, ({ one }) => ({
-  workspace: one(workspaces, { fields: [workspaceFiles.workspaceId], references: [workspaces.id] }),
+export const userFilesRelations = relations(userFiles, ({ one }) => ({
+  user: one(users, { fields: [userFiles.userId], references: [users.id] }),
 }))

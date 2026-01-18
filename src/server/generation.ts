@@ -3,10 +3,11 @@ import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import { eq } from 'drizzle-orm'
 import { db, apps, appVersions } from '../db'
 import { saveAppHtml } from './storage'
+import { env } from '../env'
 
 // Server-side OpenRouter client (uses server env var, not client-side)
 const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY!,
+  apiKey: env.OPENROUTER_API_KEY,
 })
 
 // Default model
@@ -14,8 +15,7 @@ const DEFAULT_MODEL = 'mistralai/devstral-2512:free'
 
 interface GenerateAppParams {
   prompt: string
-  workspaceId: string
-  userId: string // Reserved for future use (attribution, limits, etc.)
+  userId: string
   model?: string
 }
 
@@ -31,13 +31,12 @@ interface GenerateAppResult {
  */
 export async function generateApp({
   prompt,
-  workspaceId,
-  userId: _userId, // Prefixed with underscore to suppress unused warning
+  userId,
   model = DEFAULT_MODEL,
 }: GenerateAppParams): Promise<GenerateAppResult> {
   // Create app record in 'generating' state
   const [app] = await db.insert(apps).values({
-    workspaceId,
+    userId,
     name: 'Generating...',
     icon: '🔄',
     prompt,

@@ -5,14 +5,11 @@ import { MobileWindowManager } from './Mobile/MobileWindowManager'
 import { MobilePromptBar } from './Mobile/MobilePromptBar'
 import { AuthScreen } from './Auth/AuthScreen'
 import { useSession } from '../lib/auth-client'
-import { loadWorkspaces, loadApps, currentWorkspaceId } from '../stores/workspace'
-import { useStore } from '@nanostores/react'
 import { Flex, Spinner, Text } from '@radix-ui/themes'
 
 export function ResponsiveDesktop() {
   const [isMobile, setIsMobile] = useState(false)
   const { data: session, isPending } = useSession()
-  const $currentWorkspaceId = useStore(currentWorkspaceId)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -23,20 +20,6 @@ export function ResponsiveDesktop() {
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
-
-  // Load workspaces when authenticated
-  useEffect(() => {
-    if (session?.user) {
-      loadWorkspaces()
-    }
-  }, [session?.user])
-
-  // Load apps when workspace changes
-  useEffect(() => {
-    if ($currentWorkspaceId) {
-      loadApps($currentWorkspaceId)
-    }
-  }, [$currentWorkspaceId])
 
   // Show loading while checking auth
   if (isPending) {
