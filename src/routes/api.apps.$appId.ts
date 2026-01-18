@@ -1,32 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { eq, and } from 'drizzle-orm'
 import { auth } from '../server/auth'
-import { db, apps, workspaceMembers } from '../db'
+import { db, apps } from '../db'
 
 async function verifyAppAccess(userId: string, appId: string): Promise<boolean> {
   const app = await db.query.apps.findFirst({
-    where: eq(apps.id, appId),
-    with: {
-      workspace: true,
-    },
+    where: and(eq(apps.id, appId), eq(apps.userId, userId)),
   })
 
-  if (!app) return false
-
-  // Check if user owns the workspace
-  if (app.workspace.ownerId === userId) {
-    return true
-  }
-
-  // Check if user is a member
-  const membership = await db.query.workspaceMembers.findFirst({
-    where: and(
-      eq(workspaceMembers.workspaceId, app.workspaceId),
-      eq(workspaceMembers.userId, userId)
-    ),
-  })
-
-  return !!membership
+  return !!app
 }
 
 export const Route = createFileRoute('/api/apps/$appId')({
