@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { eq } from 'drizzle-orm'
+import { eq, and, isNull } from 'drizzle-orm'
 import { auth } from '../server/auth'
 import { db, apps } from '../db'
 
@@ -16,8 +16,12 @@ export const Route = createFileRoute('/api/apps')({
           })
         }
 
+        // Only return non-deleted apps
         const userApps = await db.query.apps.findMany({
-          where: eq(apps.userId, session.user.id),
+          where: and(
+            eq(apps.userId, session.user.id),
+            isNull(apps.deletedAt)
+          ),
           orderBy: (apps, { desc }) => [desc(apps.createdAt)],
         })
 

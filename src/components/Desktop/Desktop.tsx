@@ -1,18 +1,20 @@
-import { Box, Flex, Button, Text } from '@radix-ui/themes'
+import { Box, Flex } from '@radix-ui/themes'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { appsQueryOptions } from '../../queries/apps'
 import { settingsQueryOptions } from '../../queries/settings'
 import { DesktopIcon } from './DesktopIcon'
+import { TrashIcon } from './TrashIcon'
 import { WindowManager } from '../WindowManager/WindowManager'
 import { PromptBar } from '../PromptBar/PromptBar'
-import { signOut, useSession } from '../../lib/auth-client'
+import { signOut } from '../../lib/auth-client'
 import { resetUIState } from '../../stores/ui'
 import { getWallpaperStyle } from '../OOBE/data/wallpapers'
+import { AppleMenu } from './AppleMenu'
+import { openWindow } from '../../stores/windows'
 
 export function Desktop() {
   const { data: apps = [] } = useQuery(appsQueryOptions)
-  const { data: session } = useSession()
   const { data: settings } = useQuery(settingsQueryOptions)
 
   // Get wallpaper style from user settings
@@ -36,22 +38,14 @@ export function Desktop() {
     >
       {/* Top Bar */}
       <Flex
-        justify="between"
         align="center"
-        className="absolute top-0 left-0 right-0 bg-slate-900/80 backdrop-blur-md border-b border-slate-700 z-50"
+        className="absolute top-0 left-0 right-0 bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 z-50"
         style={{ height: '40px' }}
       >
-        <Text size="3" weight="medium" className="text-white px-3">emagine</Text>
-        <Flex align="center" gap="3" className="px-3">
-          {session?.user && (
-            <Text size="2" className="text-slate-400">
-              {session.user.email}
-            </Text>
-          )}
-          <Button size="1" variant="soft" color="gray" onClick={handleSignOut}>
-            Sign Out
-          </Button>
-        </Flex>
+        <AppleMenu
+          onSignOut={handleSignOut}
+          onOpenSettings={() => openWindow('__builtin_settings')}
+        />
       </Flex>
 
       {/* Desktop Icons - Right Side */}
@@ -59,6 +53,11 @@ export function Desktop() {
         {apps.map((app) => (
           <DesktopIcon key={app.id} app={app} />
         ))}
+      </Box>
+
+      {/* Trash Icon - Bottom Right (like macOS) */}
+      <Box className="absolute bottom-24 right-8">
+        <TrashIcon />
       </Box>
 
       {/* Windows Layer */}
