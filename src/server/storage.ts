@@ -3,10 +3,11 @@ import { env } from '../env'
 
 // Initialize S3 client for Railway Bucket
 const s3 = new S3Client({
-  endpoint: env.BUCKET_ENDPOINT!,
-  bucket: env.BUCKET_NAME!,
-  accessKeyId: env.BUCKET_ACCESS_KEY_ID!,
-  secretAccessKey: env.BUCKET_SECRET_ACCESS_KEY!,
+  endpoint: env.S3_ENDPOINT!,
+  bucket: env.S3_BUCKET!,
+  region: env.S3_REGION,
+  accessKeyId: env.S3_ACCESS_KEY_ID!,
+  secretAccessKey: env.S3_SECRET_ACCESS_KEY!,
 })
 
 /**
