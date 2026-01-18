@@ -10,13 +10,36 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiWorkspacesRouteImport } from './routes/api.workspaces'
+import { Route as ApiHealthRouteImport } from './routes/api.health'
+import { Route as ApiGenerateRouteImport } from './routes/api.generate'
 import { Route as ApiDemoNamesRouteImport } from './routes/api.demo-names'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo.start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo.start.api-request'
+import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as ApiAppsAppIdRouteImport } from './routes/api.apps.$appId'
+import { Route as ApiWorkspacesWorkspaceIdAppsRouteImport } from './routes/api.workspaces.$workspaceId.apps'
+import { Route as ApiAppsAppIdStreamRouteImport } from './routes/api.apps.$appId.stream'
+import { Route as ApiAppsAppIdServeRouteImport } from './routes/api.apps.$appId.serve'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWorkspacesRoute = ApiWorkspacesRouteImport.update({
+  id: '/api/workspaces',
+  path: '/api/workspaces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGenerateRoute = ApiGenerateRouteImport.update({
+  id: '/api/generate',
+  path: '/api/generate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiDemoNamesRoute = ApiDemoNamesRouteImport.update({
@@ -34,50 +57,129 @@ const DemoStartApiRequestRoute = DemoStartApiRequestRouteImport.update({
   path: '/demo/start/api-request',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppsAppIdRoute = ApiAppsAppIdRouteImport.update({
+  id: '/api/apps/$appId',
+  path: '/api/apps/$appId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWorkspacesWorkspaceIdAppsRoute =
+  ApiWorkspacesWorkspaceIdAppsRouteImport.update({
+    id: '/$workspaceId/apps',
+    path: '/$workspaceId/apps',
+    getParentRoute: () => ApiWorkspacesRoute,
+  } as any)
+const ApiAppsAppIdStreamRoute = ApiAppsAppIdStreamRouteImport.update({
+  id: '/stream',
+  path: '/stream',
+  getParentRoute: () => ApiAppsAppIdRoute,
+} as any)
+const ApiAppsAppIdServeRoute = ApiAppsAppIdServeRouteImport.update({
+  id: '/serve',
+  path: '/serve',
+  getParentRoute: () => ApiAppsAppIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/demo-names': typeof ApiDemoNamesRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/workspaces': typeof ApiWorkspacesRouteWithChildren
+  '/api/apps/$appId': typeof ApiAppsAppIdRouteWithChildren
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/api/apps/$appId/serve': typeof ApiAppsAppIdServeRoute
+  '/api/apps/$appId/stream': typeof ApiAppsAppIdStreamRoute
+  '/api/workspaces/$workspaceId/apps': typeof ApiWorkspacesWorkspaceIdAppsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/demo-names': typeof ApiDemoNamesRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/workspaces': typeof ApiWorkspacesRouteWithChildren
+  '/api/apps/$appId': typeof ApiAppsAppIdRouteWithChildren
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/api/apps/$appId/serve': typeof ApiAppsAppIdServeRoute
+  '/api/apps/$appId/stream': typeof ApiAppsAppIdStreamRoute
+  '/api/workspaces/$workspaceId/apps': typeof ApiWorkspacesWorkspaceIdAppsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/demo-names': typeof ApiDemoNamesRoute
+  '/api/generate': typeof ApiGenerateRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/workspaces': typeof ApiWorkspacesRouteWithChildren
+  '/api/apps/$appId': typeof ApiAppsAppIdRouteWithChildren
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/api/apps/$appId/serve': typeof ApiAppsAppIdServeRoute
+  '/api/apps/$appId/stream': typeof ApiAppsAppIdStreamRoute
+  '/api/workspaces/$workspaceId/apps': typeof ApiWorkspacesWorkspaceIdAppsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/api/demo-names'
+    | '/api/generate'
+    | '/api/health'
+    | '/api/workspaces'
+    | '/api/apps/$appId'
+    | '/api/auth/$'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/api/apps/$appId/serve'
+    | '/api/apps/$appId/stream'
+    | '/api/workspaces/$workspaceId/apps'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/api/demo-names'
+    | '/api/generate'
+    | '/api/health'
+    | '/api/workspaces'
+    | '/api/apps/$appId'
+    | '/api/auth/$'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/api/apps/$appId/serve'
+    | '/api/apps/$appId/stream'
+    | '/api/workspaces/$workspaceId/apps'
   id:
     | '__root__'
     | '/'
     | '/api/demo-names'
+    | '/api/generate'
+    | '/api/health'
+    | '/api/workspaces'
+    | '/api/apps/$appId'
+    | '/api/auth/$'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/api/apps/$appId/serve'
+    | '/api/apps/$appId/stream'
+    | '/api/workspaces/$workspaceId/apps'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiDemoNamesRoute: typeof ApiDemoNamesRoute
+  ApiGenerateRoute: typeof ApiGenerateRoute
+  ApiHealthRoute: typeof ApiHealthRoute
+  ApiWorkspacesRoute: typeof ApiWorkspacesRouteWithChildren
+  ApiAppsAppIdRoute: typeof ApiAppsAppIdRouteWithChildren
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
 }
@@ -89,6 +191,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/workspaces': {
+      id: '/api/workspaces'
+      path: '/api/workspaces'
+      fullPath: '/api/workspaces'
+      preLoaderRoute: typeof ApiWorkspacesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/generate': {
+      id: '/api/generate'
+      path: '/api/generate'
+      fullPath: '/api/generate'
+      preLoaderRoute: typeof ApiGenerateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/demo-names': {
@@ -112,12 +235,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoStartApiRequestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/apps/$appId': {
+      id: '/api/apps/$appId'
+      path: '/api/apps/$appId'
+      fullPath: '/api/apps/$appId'
+      preLoaderRoute: typeof ApiAppsAppIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/workspaces/$workspaceId/apps': {
+      id: '/api/workspaces/$workspaceId/apps'
+      path: '/$workspaceId/apps'
+      fullPath: '/api/workspaces/$workspaceId/apps'
+      preLoaderRoute: typeof ApiWorkspacesWorkspaceIdAppsRouteImport
+      parentRoute: typeof ApiWorkspacesRoute
+    }
+    '/api/apps/$appId/stream': {
+      id: '/api/apps/$appId/stream'
+      path: '/stream'
+      fullPath: '/api/apps/$appId/stream'
+      preLoaderRoute: typeof ApiAppsAppIdStreamRouteImport
+      parentRoute: typeof ApiAppsAppIdRoute
+    }
+    '/api/apps/$appId/serve': {
+      id: '/api/apps/$appId/serve'
+      path: '/serve'
+      fullPath: '/api/apps/$appId/serve'
+      preLoaderRoute: typeof ApiAppsAppIdServeRouteImport
+      parentRoute: typeof ApiAppsAppIdRoute
+    }
   }
 }
+
+interface ApiWorkspacesRouteChildren {
+  ApiWorkspacesWorkspaceIdAppsRoute: typeof ApiWorkspacesWorkspaceIdAppsRoute
+}
+
+const ApiWorkspacesRouteChildren: ApiWorkspacesRouteChildren = {
+  ApiWorkspacesWorkspaceIdAppsRoute: ApiWorkspacesWorkspaceIdAppsRoute,
+}
+
+const ApiWorkspacesRouteWithChildren = ApiWorkspacesRoute._addFileChildren(
+  ApiWorkspacesRouteChildren,
+)
+
+interface ApiAppsAppIdRouteChildren {
+  ApiAppsAppIdServeRoute: typeof ApiAppsAppIdServeRoute
+  ApiAppsAppIdStreamRoute: typeof ApiAppsAppIdStreamRoute
+}
+
+const ApiAppsAppIdRouteChildren: ApiAppsAppIdRouteChildren = {
+  ApiAppsAppIdServeRoute: ApiAppsAppIdServeRoute,
+  ApiAppsAppIdStreamRoute: ApiAppsAppIdStreamRoute,
+}
+
+const ApiAppsAppIdRouteWithChildren = ApiAppsAppIdRoute._addFileChildren(
+  ApiAppsAppIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiDemoNamesRoute: ApiDemoNamesRoute,
+  ApiGenerateRoute: ApiGenerateRoute,
+  ApiHealthRoute: ApiHealthRoute,
+  ApiWorkspacesRoute: ApiWorkspacesRouteWithChildren,
+  ApiAppsAppIdRoute: ApiAppsAppIdRouteWithChildren,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
 }

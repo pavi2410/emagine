@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useStore } from '@nanostores/react'
 import { Box, Flex, Spinner, Text } from '@radix-ui/themes'
-import { streaming } from '../../stores/streaming'
-import { apps } from '../../stores/desktop'
+import { apps } from '../../stores/workspace'
+import { api } from '../../lib/api'
 
 interface ProgressiveContentProps {
   appId: string
@@ -10,41 +10,23 @@ interface ProgressiveContentProps {
 
 /**
  * Progressive HTML rendering component
- * Displays streamed HTML chunks in real-time
+ * Loads app from server URL via iframe src
  */
 export function ProgressiveContent({ appId }: ProgressiveContentProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const $streaming = useStore(streaming)
+  const [hasError, setHasError] = useState(false)
   const $apps = useStore(apps)
 
-  const app = $apps.find(a => a.id === appId)
+  const app = $apps.find((a) => a.id === appId)
 
-  useEffect(() => {
-    // Update iframe when HTML is updated
-    if (app?.html && iframeRef.current) {
-      const iframe = iframeRef.current
+  const handleLoad = () => {
+    setIsLoading(false)
+  }
 
-      try {
-        // Set HTML in iframe
-        const doc = iframe.contentDocument || iframe.contentWindow?.document
-
-        if (doc) {
-          doc.open()
-          doc.write(app.html)
-          doc.close()
-
-          // Detect load completion
-          setIsLoading(false)
-        }
-      } catch (error) {
-        console.error('Failed to update iframe:', error)
-      }
-    }
-  }, [app?.html, appId])
-
-  // Display during streaming
-  const isStreamingThisApp = $streaming.html.targetAppId === appId && $streaming.html.chunks.length > 0
+  const handleError = () => {
+    setIsLoading(false)
+    setHasError(true)
+  }
 
   if (!app) {
     return (
@@ -56,10 +38,37 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
     )
   }
 
+  // Show loading state for generating apps
+  if (app.status === 'generating') {
+    return (
+      <Flex align="center" justify="center" direction="column" gap="3" style={{ height: '100%' }}>
+        <Spinner size="3" />
+        <Text size="2" color="gray">
+          Generating app...
+        </Text>
+      </Flex>
+    )
+  }
+
+  // Show error state
+  if (app.status === 'error' || hasError) {
+    return (
+      <Flex align="center" justify="center" direction="column" gap="2" style={{ height: '100%' }}>
+        <Text size="2" color="red">
+          Failed to load app
+        </Text>
+        <Text size="1" color="gray">
+          Please try regenerating
+        </Text>
+      </Flex>
+    )
+  }
+
+  // Load app from server URL
   return (
     <Box style={{ position: 'relative', width: '100%', height: '100%' }}>
       {/* Loading overlay */}
-      {(isLoading || isStreamingThisApp) && (
+      {isLoading && (
         <Flex
           align="center"
           justify="center"
@@ -74,32 +83,29 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
             background: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(4px)',
             zIndex: 10,
-            pointerEvents: 'none'
+            pointerEvents: 'none',
           }}
         >
           <Spinner size="3" />
           <Text size="2" color="gray">
-            {isStreamingThisApp ? 'Streaming content...' : 'Loading...'}
+            Loading app...
           </Text>
-          {isStreamingThisApp && (
-            <Text size="1" color="gray">
-              {$streaming.html.chunks.length} chunks received
-            </Text>
-          )}
         </Flex>
       )}
 
-      {/* iframe for app content */}
+      {/* iframe loads app from server URL */}
       <iframe
-        ref={iframeRef}
+        src={api.getAppUrl(appId)}
         title={app.name}
+        onLoad={handleLoad}
+        onError={handleError}
         style={{
           width: '100%',
           height: '100%',
           border: 'none',
-          background: 'white'
+          background: 'white',
         }}
-        sandbox="allow-scripts allow-same-origin"
+        sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
       />
     </Box>
   )
