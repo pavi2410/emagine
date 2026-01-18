@@ -1,69 +1,67 @@
-import { Box, Flex, Text } from '@radix-ui/themes'
-
 export function AboutSection() {
   return (
-    <Box className="p-6">
-      <Text size="5" weight="bold" className="mb-6 block text-white">
+    <div className="p-6">
+      <h2 className="text-xl font-bold mb-6 text-white">
         About
-      </Text>
+      </h2>
 
       {/* App Info */}
-      <Box className="bg-slate-800/50 rounded-xl p-6 mb-4">
-        <Flex direction="column" align="center" className="py-4">
-          <Box className="text-5xl mb-3">✨</Box>
-          <Text size="6" weight="bold" className="text-white mb-1">
+      <div className="bg-slate-800/50 rounded-xl p-6 mb-4">
+        <div className="flex flex-col items-center py-4">
+          <span className="text-5xl mb-3">✨</span>
+          <h1 className="text-2xl font-bold text-white mb-1">
             emagine
-          </Text>
-          <Text size="2" className="text-slate-400 mb-4">
+          </h1>
+          <span className="text-sm text-slate-400 mb-4">
             Version 1.0
-          </Text>
-          <Text size="2" className="text-slate-300 text-center max-w-sm">
+          </span>
+          <p className="text-sm text-slate-300 text-center max-w-sm">
             AI-powered app generation platform. Describe what you want, and watch it come to life.
-          </Text>
-        </Flex>
-      </Box>
+          </p>
+        </div>
+      </div>
 
       {/* Technical Info */}
-      <Box className="bg-slate-800/50 rounded-xl p-5 mb-4">
-        <Text size="3" weight="medium" className="mb-4 block text-slate-300">
+      <div className="bg-slate-800/50 rounded-xl p-5 mb-4">
+        <h3 className="text-base font-medium mb-4 text-slate-300">
           Technical Details
-        </Text>
+        </h3>
 
-        <Flex direction="column" gap="2">
-          <Flex justify="between" align="center" className="py-2 border-b border-slate-700/50">
-            <Text size="2" className="text-slate-400">Powered by</Text>
-            <Text size="2" className="text-white">OpenRouter</Text>
-          </Flex>
-          <Flex justify="between" align="center" className="py-2 border-b border-slate-700/50">
-            <Text size="2" className="text-slate-400">Framework</Text>
-            <Text size="2" className="text-white">React + TanStack</Text>
-          </Flex>
-          <Flex justify="between" align="center" className="py-2 border-b border-slate-700/50">
-            <Text size="2" className="text-slate-400">UI Library</Text>
-            <Text size="2" className="text-white">Radix UI</Text>
-          </Flex>
-          <Flex justify="between" align="center" className="py-2">
-            <Text size="2" className="text-slate-400">Runtime</Text>
-            <Text size="2" className="text-white">Bun</Text>
-          </Flex>
-        </Flex>
-      </Box>
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span className="text-sm text-slate-400">Powered by</span>
+            <span className="text-sm text-white">OpenRouter</span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span className="text-sm text-slate-400">Framework</span>
+            <span className="text-sm text-white">React + TanStack</span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span className="text-sm text-slate-400">UI Library</span>
+            <span className="text-sm text-white">Base UI + Tailwind</span>
+          </div>
+          <div className="flex justify-between items-center py-2">
+            <span className="text-sm text-slate-400">Runtime</span>
+            <span className="text-sm text-white">Bun</span>
+          </div>
+        </div>
+      </div>
 
       {/* Credits */}
-      <Box className="bg-slate-800/50 rounded-xl p-5">
-        <Text size="3" weight="medium" className="mb-4 block text-slate-300">
+      <div className="bg-slate-800/50 rounded-xl p-5">
+        <h3 className="text-base font-medium mb-4 text-slate-300">
           Credits
-        </Text>
+        </h3>
 
-        <Flex direction="column" gap="2">
-          <Text size="2" className="text-slate-400">
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-slate-400">
             Built with love using modern web technologies.
-          </Text>
-          <Text size="2" className="text-slate-500">
+          </p>
+          <p className="text-sm text-slate-500">
             © 2025 emagine. All rights reserved.
-          </Text>
-        </Flex>
-      </Box>
-    </Box>
+          </p>
+        </div>
+      </div>
+    </div>
   )
 }

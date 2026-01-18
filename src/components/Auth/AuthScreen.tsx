@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Box, Button, Flex, Text, TextField, Tabs } from '@radix-ui/themes'
+import { Button } from '../ui/Button'
+import { Input } from '../ui/Input'
+import { Tabs } from '../ui/Tabs'
 import { signIn, signUp } from '../../lib/auth-client'
 
 interface AuthScreenProps {
@@ -52,26 +54,23 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
   }
 
   return (
-    <Flex
-      align="center"
-      justify="center"
+    <div
+      className="flex items-center justify-center min-h-screen"
       style={{
-        minHeight: '100vh',
         background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)',
       }}
     >
-      <Box
-        className="bg-slate-900/90 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-slate-700"
-        style={{ width: '400px', maxWidth: '90vw' }}
+      <div
+        className="bg-slate-900/90 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-slate-700 w-[400px] max-w-[90vw]"
       >
-        <Flex direction="column" align="center" gap="4" className="mb-6">
-          <Text size="8" className="text-white font-bold">
+        <div className="flex flex-col items-center gap-4 mb-6">
+          <h1 className="text-3xl text-white font-bold">
             emagine
-          </Text>
-          <Text size="2" className="text-slate-400 text-center">
+          </h1>
+          <p className="text-sm text-slate-400 text-center">
             The AI-powered generative desktop
-          </Text>
-        </Flex>
+          </p>
+        </div>
 
         <Tabs.Root defaultValue="signin">
           <Tabs.List className="mb-4">
@@ -81,79 +80,79 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
 
           <Tabs.Content value="signin">
             <form onSubmit={handleSignIn}>
-              <Flex direction="column" gap="3">
-                <Box>
-                  <Text size="2" className="text-slate-400 mb-1 block">
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">
                     Email
-                  </Text>
-                  <TextField.Root
+                  </label>
+                  <Input
                     type="email"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
-                </Box>
+                </div>
 
-                <Box>
-                  <Text size="2" className="text-slate-400 mb-1 block">
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">
                     Password
-                  </Text>
-                  <TextField.Root
+                  </label>
+                  <Input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
-                </Box>
+                </div>
 
                 {error && (
-                  <Text size="2" color="red">
+                  <p className="text-sm text-red-500">
                     {error}
-                  </Text>
+                  </p>
                 )}
 
                 <Button type="submit" size="3" disabled={isLoading} className="mt-2">
                   {isLoading ? 'Signing in...' : 'Sign In'}
                 </Button>
-              </Flex>
+              </div>
             </form>
           </Tabs.Content>
 
           <Tabs.Content value="signup">
             <form onSubmit={handleSignUp}>
-              <Flex direction="column" gap="3">
-                <Box>
-                  <Text size="2" className="text-slate-400 mb-1 block">
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">
                     Name
-                  </Text>
-                  <TextField.Root
+                  </label>
+                  <Input
                     type="text"
                     placeholder="Your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
-                </Box>
+                </div>
 
-                <Box>
-                  <Text size="2" className="text-slate-400 mb-1 block">
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">
                     Email
-                  </Text>
-                  <TextField.Root
+                  </label>
+                  <Input
                     type="email"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
-                </Box>
+                </div>
 
-                <Box>
-                  <Text size="2" className="text-slate-400 mb-1 block">
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">
                     Password
-                  </Text>
-                  <TextField.Root
+                  </label>
+                  <Input
                     type="password"
                     placeholder="••••••••"
                     value={password}
@@ -161,22 +160,22 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
                     required
                     minLength={8}
                   />
-                </Box>
+                </div>
 
                 {error && (
-                  <Text size="2" color="red">
+                  <p className="text-sm text-red-500">
                     {error}
-                  </Text>
+                  </p>
                 )}
 
                 <Button type="submit" size="3" disabled={isLoading} className="mt-2">
                   {isLoading ? 'Creating account...' : 'Create Account'}
                 </Button>
-              </Flex>
+              </div>
             </form>
           </Tabs.Content>
         </Tabs.Root>
-      </Box>
-    </Flex>
+      </div>
+    </div>
   )
 }

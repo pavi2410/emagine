@@ -1,5 +1,4 @@
 import { Rnd } from 'react-rnd'
-import { Flex, Text } from '@radix-ui/themes'
 import type { WindowState } from '../../stores/windows'
 import type { App } from '../../queries/apps'
 import { closeWindow, updateWindowPosition, updateWindowSize, bringToFront, minimizeWindow, toggleMaximize } from '../../stores/windows'
@@ -57,7 +56,7 @@ export function Window({ window: win, app }: WindowProps) {
       <div className={`h-full w-full flex flex-col bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56),inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden ${win.isMaximized ? 'rounded-none' : 'rounded-[10px]'}`}>
         {/* Title Bar with macOS traffic lights */}
         <div className="window-drag-handle cursor-move shrink-0 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50" onDoubleClick={handleMaximize}>
-          <Flex align="center" className="px-4 py-1">
+          <div className="flex items-center px-4 py-1">
             {/* Traffic Lights */}
             <TrafficLights
               onClose={handleClose}
@@ -67,16 +66,16 @@ export function Window({ window: win, app }: WindowProps) {
             />
 
             {/* Title */}
-            <Flex align="center" gap="2" className="flex-1 justify-center">
+            <div className="flex items-center gap-2 flex-1 justify-center">
               <span className="text-base">{app.icon}</span>
-              <Text size="2" weight="medium" className="text-slate-700 dark:text-slate-300">
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 {app.name}
-              </Text>
-            </Flex>
+              </span>
+            </div>
 
             {/* Spacer to center title */}
             <div className="w-14" />
-          </Flex>
+          </div>
         </div>
 
         {/* Content */}

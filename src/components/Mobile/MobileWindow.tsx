@@ -1,5 +1,4 @@
-import { Box, Flex, IconButton, Text } from '@radix-ui/themes'
-import { ChevronLeftIcon } from '@radix-ui/react-icons'
+import { IconChevronLeft } from '@tabler/icons-react'
 import { motion } from 'motion/react'
 import type { WindowState } from '../../stores/windows'
 import type { App } from '../../queries/apps'
@@ -41,31 +40,30 @@ export function MobileWindow({ window: win, app }: MobileWindowProps) {
       className="fixed inset-0 z-50 bg-white dark:bg-slate-900 flex flex-col"
     >
       {/* Header */}
-      <Box className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 safe-top">
-        <Flex align="center" justify="between" className="px-4 py-3">
-          <IconButton
-            size="2"
-            variant="ghost"
+      <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 safe-top">
+        <div className="flex items-center justify-between px-4 py-3">
+          <button
             onClick={() => closeWindow(win.id)}
+            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
           >
-            <ChevronLeftIcon width="20" height="20" />
-          </IconButton>
+            <IconChevronLeft size={20} />
+          </button>
 
-          <Flex align="center" gap="2">
+          <div className="flex items-center gap-2">
             <span className="text-xl">{app.icon}</span>
-            <Text size="3" weight="medium">
+            <span className="text-base font-medium">
               {app.name}
-            </Text>
-          </Flex>
+            </span>
+          </div>
 
-          <Box className="w-8" />
-        </Flex>
-      </Box>
+          <div className="w-8" />
+        </div>
+      </div>
 
       {/* Content */}
-      <Box className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden">
         {renderAppContent(app)}
-      </Box>
+      </div>
     </motion.div>
   )
 }

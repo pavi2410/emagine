@@ -1,4 +1,3 @@
-import { Box, Flex, Text, Button } from '@radix-ui/themes'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from '../../../../lib/auth-client'
 import { settingsQueryOptions } from '../../../../queries/settings'
@@ -11,53 +10,53 @@ export function AccountSection() {
   const user = session?.user
 
   return (
-    <Box className="p-6">
-      <Text size="5" weight="bold" className="mb-6 block text-white">
+    <div className="p-6">
+      <h2 className="text-xl font-bold mb-6 text-white">
         Account
-      </Text>
+      </h2>
 
       {/* Profile Card */}
-      <Box className="bg-slate-800/50 rounded-xl p-6 mb-4">
-        <Flex align="center" gap="4">
+      <div className="bg-slate-800/50 rounded-xl p-6 mb-4">
+        <div className="flex items-center gap-4">
           <UserAvatar
             avatarId={settings?.avatar || 'gradient-1'}
             name={user?.name || ''}
             size="lg"
           />
-          <Flex direction="column" gap="1">
-            <Text size="4" weight="medium" className="text-white">
+          <div className="flex flex-col gap-1">
+            <span className="text-lg font-medium text-white">
               {user?.name || 'User'}
-            </Text>
-            <Text size="2" className="text-slate-400">
+            </span>
+            <span className="text-sm text-slate-400">
               {user?.email}
-            </Text>
-          </Flex>
-        </Flex>
-      </Box>
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* Account Details */}
-      <Box className="bg-slate-800/50 rounded-xl p-5">
-        <Text size="3" weight="medium" className="mb-4 block text-slate-300">
+      <div className="bg-slate-800/50 rounded-xl p-5">
+        <h3 className="text-base font-medium mb-4 text-slate-300">
           Account Details
-        </Text>
+        </h3>
 
-        <Flex direction="column" gap="3">
-          <Flex justify="between" align="center" className="py-2 border-b border-slate-700/50">
-            <Text size="2" className="text-slate-400">Name</Text>
-            <Text size="2" className="text-white">{user?.name || 'Not set'}</Text>
-          </Flex>
-          <Flex justify="between" align="center" className="py-2 border-b border-slate-700/50">
-            <Text size="2" className="text-slate-400">Email</Text>
-            <Text size="2" className="text-white">{user?.email}</Text>
-          </Flex>
-          <Flex justify="between" align="center" className="py-2">
-            <Text size="2" className="text-slate-400">Account Created</Text>
-            <Text size="2" className="text-white">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span className="text-sm text-slate-400">Name</span>
+            <span className="text-sm text-white">{user?.name || 'Not set'}</span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span className="text-sm text-slate-400">Email</span>
+            <span className="text-sm text-white">{user?.email}</span>
+          </div>
+          <div className="flex justify-between items-center py-2">
+            <span className="text-sm text-slate-400">Account Created</span>
+            <span className="text-sm text-white">
               {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}
-            </Text>
-          </Flex>
-        </Flex>
-      </Box>
-    </Box>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

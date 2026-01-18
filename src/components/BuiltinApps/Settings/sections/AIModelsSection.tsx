@@ -1,4 +1,3 @@
-import { Box, Flex, Text, Select } from '@radix-ui/themes'
 import { useQuery } from '@tanstack/react-query'
 import { settingsQueryOptions, useUpdateSettings, AVAILABLE_MODELS, type ModelId } from '../../../../queries/settings'
 
@@ -9,88 +8,86 @@ export function AIModelsSection() {
   const currentModel = settings?.selectedModel ? AVAILABLE_MODELS[settings.selectedModel as ModelId] : null
 
   return (
-    <Box className="p-6">
-      <Text size="5" weight="bold" className="mb-6 block text-white">
+    <div className="p-6">
+      <h2 className="text-xl font-bold mb-6 text-white">
         AI Models
-      </Text>
+      </h2>
 
       {/* Model Selection */}
-      <Box className="bg-slate-800/50 rounded-xl p-5 mb-4">
-        <Text size="3" weight="medium" className="mb-4 block text-slate-300">
+      <div className="bg-slate-800/50 rounded-xl p-5 mb-4">
+        <h3 className="text-base font-medium mb-4 text-slate-300">
           Generation Model
-        </Text>
+        </h3>
 
-        <Flex direction="column" gap="4">
-          <Box>
-            <Text size="2" className="text-slate-400 mb-2 block">
+        <div className="flex flex-col gap-4">
+          <div>
+            <label className="text-sm text-slate-400 mb-2 block">
               Select Model
-            </Text>
-            <Select.Root
-              value={settings?.selectedModel}
-              onValueChange={(value) => updateSettings.mutate({ selectedModel: value as ModelId })}
+            </label>
+            <select
+              value={settings?.selectedModel || ''}
+              onChange={(e) => updateSettings.mutate({ selectedModel: e.target.value as ModelId })}
+              className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              <Select.Trigger className="w-full" />
-              <Select.Content>
-                {Object.entries(AVAILABLE_MODELS).map(([id, model]) => (
-                  <Select.Item key={id} value={id}>
-                    {model.name}
-                    {model.supportsTools && ' ⚡'}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Root>
-          </Box>
+              {Object.entries(AVAILABLE_MODELS).map(([id, model]) => (
+                <option key={id} value={id}>
+                  {model.name}
+                  {model.supportsTools && ' ⚡'}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Model Info Card */}
           {currentModel && (
-            <Box className="bg-slate-700/50 rounded-lg p-4">
-              <Text size="2" weight="medium" className="block mb-1 text-white">
+            <div className="bg-slate-700/50 rounded-lg p-4">
+              <span className="text-sm font-medium block mb-1 text-white">
                 {currentModel.name}
-              </Text>
-              <Text size="1" className="text-slate-400 block mb-1">
+              </span>
+              <span className="text-xs text-slate-400 block mb-1">
                 Provider: {currentModel.provider}
-              </Text>
-              <Text size="1" className="text-slate-400 block">
+              </span>
+              <span className="text-xs text-slate-400 block">
                 {currentModel.description}
-              </Text>
+              </span>
               {currentModel.supportsTools && (
-                <Text size="1" className="text-green-400 block mt-2">
+                <span className="text-xs text-green-400 block mt-2">
                   ⚡ Supports streaming tools
-                </Text>
+                </span>
               )}
-            </Box>
+            </div>
           )}
-        </Flex>
-      </Box>
+        </div>
+      </div>
 
       {/* Advanced Options */}
-      <Box className="bg-slate-800/50 rounded-xl p-5">
-        <Text size="3" weight="medium" className="mb-4 block text-slate-300">
+      <div className="bg-slate-800/50 rounded-xl p-5">
+        <h3 className="text-base font-medium mb-4 text-slate-300">
           Advanced Options
-        </Text>
+        </h3>
 
-        <Flex direction="column" gap="3">
-          <Flex justify="between" align="center" className="py-2 border-b border-slate-700/50">
-            <Flex direction="column" gap="1">
-              <Text size="2" className="text-white">Enable Thinking Display</Text>
-              <Text size="1" className="text-slate-500">Show AI reasoning process</Text>
-            </Flex>
-            <Box className="bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-semibold">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <div className="flex flex-col gap-1">
+              <span className="text-sm text-white">Enable Thinking Display</span>
+              <span className="text-xs text-slate-500">Show AI reasoning process</span>
+            </div>
+            <span className="bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-semibold">
               Coming Soon
-            </Box>
-          </Flex>
+            </span>
+          </div>
 
-          <Flex justify="between" align="center" className="py-2">
-            <Flex direction="column" gap="1">
-              <Text size="2" className="text-white">Bring Your Own Key (BYOK)</Text>
-              <Text size="1" className="text-slate-500">Use your own API keys</Text>
-            </Flex>
-            <Box className="bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="flex justify-between items-center py-2">
+            <div className="flex flex-col gap-1">
+              <span className="text-sm text-white">Bring Your Own Key (BYOK)</span>
+              <span className="text-xs text-slate-500">Use your own API keys</span>
+            </div>
+            <span className="bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-semibold">
               Coming Soon
-            </Box>
-          </Flex>
-        </Flex>
-      </Box>
-    </Box>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

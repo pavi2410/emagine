@@ -1,8 +1,18 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { Theme } from '@radix-ui/themes'
-import '@radix-ui/themes/styles.css'
 
 import appCss from '../styles.css?url'
+import { BSOD } from '@/components/BSOD/BSOD'
+
+function RootErrorComponent({ error }: { error: Error }) {
+  const errorCode = (error as Error & { code?: string }).code || 'UNKNOWN'
+  return (
+    <BSOD
+      errorCode={errorCode}
+      message={error.message || 'An unexpected error occurred'}
+      onRestart={() => window.location.reload()}
+    />
+  )
+}
 
 export const Route = createRootRoute({
   head: () => ({
@@ -27,19 +37,18 @@ export const Route = createRootRoute({
   }),
 
   shellComponent: RootDocument,
+
+  errorComponent: RootErrorComponent,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
-      <body>
-        <Theme appearance="dark" accentColor="purple" radius="medium">
-          {children}
-          {/* Devtools disabled for production build */}
-        </Theme>
+      <body className="bg-slate-950 text-white antialiased">
+        {children}
         <Scripts />
       </body>
     </html>

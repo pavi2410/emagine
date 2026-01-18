@@ -1,7 +1,8 @@
-import { Box, Flex, TextField, IconButton } from '@radix-ui/themes'
-import { PaperPlaneIcon } from '@radix-ui/react-icons'
+import { IconSend, IconX } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useStore } from '@nanostores/react'
+import { Input } from '../ui/Input'
+import { IconButton } from '../ui/IconButton'
 import { generation } from '../../stores/generation'
 import { useAppGeneration } from '../../hooks/useAppGeneration'
 
@@ -35,22 +36,22 @@ export function MobilePromptBar() {
 
       {/* Expanded Prompt Sheet */}
       {isExpanded && (
-        <Box className="fixed inset-x-0 bottom-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-40 rounded-t-3xl shadow-2xl p-6 safe-bottom">
+        <div className="fixed inset-x-0 bottom-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-40 rounded-t-3xl shadow-2xl p-6 safe-bottom">
           <form onSubmit={handleSubmit}>
-            <Flex direction="column" gap="3">
-              <Flex justify="between" align="center">
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
                 <span className="text-2xl">✨</span>
-                <IconButton
+                <button
                   type="button"
-                  variant="ghost"
                   onClick={() => setIsExpanded(false)}
+                  className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                 >
-                  ✕
-                </IconButton>
-              </Flex>
+                  <IconX size={20} />
+                </button>
+              </div>
 
-              <TextField.Root
-                size="3"
+              <Input
+                inputSize="3"
                 placeholder="What do you want to build?"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
@@ -60,9 +61,9 @@ export function MobilePromptBar() {
               />
 
               {$generation.isGenerating && (
-                <Box className="text-sm text-slate-500">
+                <div className="text-sm text-slate-500">
                   {$generation.currentStep}
-                </Box>
+                </div>
               )}
 
               <IconButton
@@ -71,16 +72,16 @@ export function MobilePromptBar() {
                 disabled={!prompt.trim() || $generation.isGenerating}
                 className="w-full"
               >
-                <PaperPlaneIcon width="18" height="18" />
+                <IconSend size={18} />
               </IconButton>
-            </Flex>
+            </div>
           </form>
-        </Box>
+        </div>
       )}
 
       {/* Backdrop */}
       {isExpanded && (
-        <Box
+        <div
           className="fixed inset-0 bg-black/20 z-30"
           onClick={() => setIsExpanded(false)}
         />

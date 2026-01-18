@@ -1,5 +1,4 @@
-import { Box, Flex } from '@radix-ui/themes'
-import { EnterFullScreenIcon, ExitFullScreenIcon } from '@radix-ui/react-icons'
+import { IconMaximize, IconMinimize } from '@tabler/icons-react'
 import { useMemo, useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { appsQueryOptions } from '../../queries/apps'
@@ -42,15 +41,13 @@ export function Desktop() {
   }
 
   return (
-    <Box
+    <div
       className="relative w-screen h-screen overflow-hidden"
       style={wallpaperStyle}
     >
       {/* Top Bar */}
-      <Flex
-        align="center"
-        justify="between"
-        className="absolute top-0 left-0 right-0 bg-black/25 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/10 z-50"
+      <div
+        className="absolute top-0 left-0 right-0 bg-black/25 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/10 z-50 flex items-center justify-between"
         style={{ height: '28px' }}
       >
         <AppleMenu
@@ -69,30 +66,30 @@ export function Desktop() {
           title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
         >
           {isFullscreen ? (
-            <ExitFullScreenIcon className="text-white/90" width={14} height={14} />
+            <IconMinimize className="text-white/90" size={14} />
           ) : (
-            <EnterFullScreenIcon className="text-white/90" width={14} height={14} />
+            <IconMaximize className="text-white/90" size={14} />
           )}
         </button>
-      </Flex>
+      </div>
 
       {/* Desktop Icons - Right Side */}
-      <Box className="absolute top-10 right-8 flex flex-col gap-4 items-end">
+      <div className="absolute top-10 right-8 flex flex-col gap-4 items-end">
         {apps.map((app) => (
           <DesktopIcon key={app.id} app={app} />
         ))}
-      </Box>
+      </div>
 
       {/* Trash Icon - Bottom Right (like macOS) */}
-      <Box className="absolute bottom-24 right-8">
+      <div className="absolute bottom-24 right-8">
         <TrashIcon />
-      </Box>
+      </div>
 
       {/* Windows Layer */}
       <WindowManager />
 
       {/* Prompt Bar at Bottom */}
       <PromptBar />
-    </Box>
+    </div>
   )
 }

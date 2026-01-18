@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Flex, Text, Button, Box } from '@radix-ui/themes'
 import { motion, AnimatePresence } from 'motion/react'
+import { Button } from '../../ui/Button'
 
 interface TutorialStepProps {
   onNext: () => void
@@ -62,11 +62,8 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
   const slide = TUTORIAL_SLIDES[currentSlide]
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      gap="6"
-      className="px-8 w-full max-w-lg"
+    <div
+      className="flex flex-col items-center gap-6 px-8 w-full max-w-lg"
     >
       {/* Title */}
       <motion.div
@@ -75,9 +72,9 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
         transition={{ delay: 0.1 }}
         className="text-center"
       >
-        <Text size="7" weight="bold" className="text-white block mb-2">
+        <h1 className="text-2xl font-bold text-white mb-2">
           How it works
-        </Text>
+        </h1>
       </motion.div>
 
       {/* Demo area */}
@@ -114,7 +111,7 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
                     animate={{ boxShadow: ['0 0 0 0 rgba(139, 92, 246, 0)', '0 0 0 8px rgba(139, 92, 246, 0.3)', '0 0 0 0 rgba(139, 92, 246, 0)'] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <Text className="text-white">
+                    <span className="text-white">
                       {typedText}
                       <motion.span
                         animate={{ opacity: [1, 0] }}
@@ -122,7 +119,7 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
                       >
                         |
                       </motion.span>
-                    </Text>
+                    </span>
                   </motion.div>
                 </div>
               </motion.div>
@@ -144,7 +141,7 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   />
-                  <Text className="text-slate-300">Generating your app...</Text>
+                  <span className="text-slate-300">Generating your app...</span>
                 </div>
               </motion.div>
             )}
@@ -175,9 +172,9 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
                     <div className="w-12 h-12 bg-red-500/80 rounded-xl flex items-center justify-center text-xl">
                       ⏱️
                     </div>
-                    <Text size="1" className="text-white">
+                    <span className="text-xs text-white">
                       Pomodoro
-                    </Text>
+                    </span>
                   </div>
                 </motion.div>
                 {/* Open window */}
@@ -193,9 +190,9 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
                     <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
                   </div>
                   <div className="p-3 text-center">
-                    <Text size="6" className="text-white font-mono">
+                    <span className="text-2xl text-white font-mono">
                       25:00
-                    </Text>
+                    </span>
                   </div>
                 </motion.div>
               </motion.div>
@@ -211,16 +208,16 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
         animate={{ y: 0, opacity: 1 }}
         className="text-center"
       >
-        <Text size="4" weight="bold" className="text-white block mb-1">
+        <h2 className="text-lg font-bold text-white mb-1">
           {slide.title}
-        </Text>
-        <Text size="2" className="text-slate-300">
+        </h2>
+        <p className="text-sm text-slate-300">
           {slide.description}
-        </Text>
+        </p>
       </motion.div>
 
       {/* Slide indicators */}
-      <Flex gap="2" align="center">
+      <div className="flex gap-2 items-center">
         {TUTORIAL_SLIDES.map((_, index) => (
           <button
             key={index}
@@ -230,7 +227,7 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
             }`}
           />
         ))}
-      </Flex>
+      </div>
 
       {/* Navigation */}
       <motion.div
@@ -252,6 +249,6 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
           </Button>
         )}
       </motion.div>
-    </Flex>
+    </div>
   )
 }

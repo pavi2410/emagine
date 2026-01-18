@@ -1,5 +1,3 @@
-import { Flex, Text } from '@radix-ui/themes'
-
 export type SettingsSection = 'account' | 'appearance' | 'ai-models' | 'apps' | 'about'
 
 interface SidebarItem {
@@ -23,9 +21,8 @@ interface SettingsSidebarProps {
 
 export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSidebarProps) {
   return (
-    <Flex
-      direction="column"
-      className="w-[200px] bg-slate-800/50 border-r border-slate-700/50 py-2"
+    <div
+      className="flex flex-col w-[200px] bg-slate-800/50 border-r border-slate-700/50 py-2"
     >
       {SIDEBAR_ITEMS.map((item) => {
         const isActive = activeSection === item.id
@@ -40,16 +37,14 @@ export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSide
             }`}
           >
             <span className="text-lg">{item.icon}</span>
-            <Text
-              size="2"
-              weight={isActive ? 'medium' : 'regular'}
-              className={isActive ? 'text-white' : 'text-slate-300'}
+            <span
+              className={`text-sm ${isActive ? 'font-medium text-white' : 'text-slate-300'}`}
             >
               {item.label}
-            </Text>
+            </span>
           </button>
         )
       })}
-    </Flex>
+    </div>
   )
 }

@@ -1,4 +1,3 @@
-import { Flex } from '@radix-ui/themes'
 import { motion } from 'motion/react'
 
 interface OOBEProgressProps {
@@ -8,7 +7,7 @@ interface OOBEProgressProps {
 
 export function OOBEProgress({ currentStep, totalSteps }: OOBEProgressProps) {
   return (
-    <Flex gap="2" align="center" justify="center" className="py-4">
+    <div className="flex gap-2 items-center justify-center py-4">
       {Array.from({ length: totalSteps }).map((_, index) => (
         <motion.div
           key={index}
@@ -27,6 +26,6 @@ export function OOBEProgress({ currentStep, totalSteps }: OOBEProgressProps) {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         />
       ))}
-    </Flex>
+    </div>
   )
 }

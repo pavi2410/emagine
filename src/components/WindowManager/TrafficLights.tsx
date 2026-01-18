@@ -1,5 +1,3 @@
-import { Flex } from '@radix-ui/themes'
-
 interface TrafficLightsProps {
   onClose: () => void
   onMinimize: () => void
@@ -14,7 +12,7 @@ export function TrafficLights({
   isMaximized = false,
 }: TrafficLightsProps) {
   return (
-    <Flex gap="2" className="group mr-3">
+    <div className="flex gap-2 group mr-3">
       {/* Close button */}
       <button
         onClick={onClose}
@@ -81,6 +79,6 @@ export function TrafficLights({
           )}
         </svg>
       </button>
-    </Flex>
+    </div>
   )
 }

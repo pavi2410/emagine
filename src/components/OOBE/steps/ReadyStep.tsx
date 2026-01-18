@@ -1,5 +1,5 @@
-import { Flex, Text, Button } from '@radix-ui/themes'
 import { motion } from 'motion/react'
+import { Button } from '../../ui/Button'
 import { UserAvatar } from '../../Auth/UserAvatar'
 import type { OOBEData } from '../hooks/useOOBE'
 
@@ -12,12 +12,8 @@ interface ReadyStepProps {
 
 export function ReadyStep({ data, isLoading, onComplete, onBack }: ReadyStepProps) {
   return (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      gap="8"
-      className="text-center px-8"
+    <div
+      className="flex flex-col items-center justify-center gap-8 text-center px-8"
     >
       {/* Celebration animation */}
       <motion.div
@@ -68,12 +64,12 @@ export function ReadyStep({ data, isLoading, onComplete, onBack }: ReadyStepProp
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <Text size="8" weight="bold" className="text-white block mb-2">
+        <h1 className="text-3xl font-bold text-white mb-2">
           You're all set{data.name ? `, ${data.name.split(' ')[0]}` : ''}!
-        </Text>
-        <Text size="3" className="text-slate-300 max-w-md">
+        </h1>
+        <p className="text-base text-slate-300 max-w-md">
           Your desktop is ready. Start creating amazing apps with just a description.
-        </Text>
+        </p>
       </motion.div>
 
       {/* Summary */}
@@ -83,30 +79,30 @@ export function ReadyStep({ data, isLoading, onComplete, onBack }: ReadyStepProp
         transition={{ delay: 0.4 }}
         className="bg-white/5 rounded-xl p-4 border border-white/10"
       >
-        <Flex direction="column" gap="2" align="start">
-          <Flex gap="2" align="center">
-            <Text size="2" className="text-slate-400">
+        <div className="flex flex-col gap-2 items-start">
+          <div className="flex gap-2 items-center">
+            <span className="text-sm text-slate-400">
               Profile:
-            </Text>
-            <Text size="2" className="text-white">
+            </span>
+            <span className="text-sm text-white">
               {data.name || 'Not set'}
-            </Text>
-          </Flex>
-          <Flex gap="2" align="center">
-            <Text size="2" className="text-slate-400">
+            </span>
+          </div>
+          <div className="flex gap-2 items-center">
+            <span className="text-sm text-slate-400">
               Wallpaper:
-            </Text>
+            </span>
             <div
               className="w-6 h-4 rounded"
               style={{
                 background: `linear-gradient(135deg, var(--wallpaper-color))`,
               }}
             />
-            <Text size="2" className="text-white capitalize">
+            <span className="text-sm text-white capitalize">
               {data.wallpaper.replace('gradient-', '')}
-            </Text>
-          </Flex>
-        </Flex>
+            </span>
+          </div>
+        </div>
       </motion.div>
 
       {/* Start button */}
@@ -119,10 +115,10 @@ export function ReadyStep({ data, isLoading, onComplete, onBack }: ReadyStepProp
         <Button variant="soft" size="3" onClick={onBack} disabled={isLoading}>
           Back
         </Button>
-        <Button size="4" onClick={onComplete} disabled={isLoading}>
+        <Button size="3" onClick={onComplete} disabled={isLoading}>
           {isLoading ? 'Setting up...' : 'Start Creating'}
         </Button>
       </motion.div>
-    </Flex>
+    </div>
   )
 }

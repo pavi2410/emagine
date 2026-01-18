@@ -1,4 +1,4 @@
-import { ScrollArea } from '@radix-ui/themes'
+import { ScrollArea } from '../../ui/ScrollArea'
 import type { SettingsSection } from './SettingsSidebar'
 import { AccountSection } from './sections/AccountSection'
 import { AppearanceSection } from './sections/AppearanceSection'

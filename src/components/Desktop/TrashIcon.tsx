@@ -1,4 +1,3 @@
-import { Flex, Text } from '@radix-ui/themes'
 import { useQuery } from '@tanstack/react-query'
 import { trashedAppsQueryOptions } from '../../queries/trash'
 import { openWindow } from '../../stores/windows'
@@ -12,11 +11,8 @@ export function TrashIcon() {
   }
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      gap="2"
-      className="w-24 cursor-pointer hover:bg-blue-500/25 rounded-lg p-2 transition-colors"
+    <div
+      className="flex flex-col items-center gap-2 w-24 cursor-pointer hover:bg-blue-500/25 rounded-lg p-2 transition-colors"
       onDoubleClick={handleDoubleClick}
     >
       <div className="text-5xl relative drop-shadow-lg">
@@ -29,9 +25,9 @@ export function TrashIcon() {
           </div>
         )}
       </div>
-      <Text size="2" className="text-white text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+      <span className="text-sm text-white text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
         Trash
-      </Text>
-    </Flex>
+      </span>
+    </div>
   )
 }

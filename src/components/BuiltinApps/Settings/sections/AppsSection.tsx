@@ -1,5 +1,6 @@
-import { Box, Flex, Text, ScrollArea, Button } from '@radix-ui/themes'
 import { useQuery } from '@tanstack/react-query'
+import { Button } from '../../../ui/Button'
+import { ScrollArea } from '../../../ui/ScrollArea'
 import { appsQueryOptions, type App } from '../../../../queries/apps'
 import { useMoveToTrash } from '../../../../queries/trash'
 import { openWindow } from '../../../../stores/windows'
@@ -16,24 +17,22 @@ function AppItem({ app }: { app: App }) {
   }
 
   return (
-    <Flex
-      align="center"
-      justify="between"
-      className="p-3 rounded-lg hover:bg-slate-700/30 transition-colors"
+    <div
+      className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-700/30 transition-colors"
     >
-      <Flex align="center" gap="3">
-        <Box className="text-2xl">{app.icon}</Box>
-        <Flex direction="column" gap="0">
-          <Text size="2" weight="medium" className="text-white">
+      <div className="flex items-center gap-3">
+        <span className="text-2xl">{app.icon}</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-white">
             {app.name}
-          </Text>
-          <Text size="1" className="text-slate-500">
+          </span>
+          <span className="text-xs text-slate-500">
             Created {new Date(app.createdAt).toLocaleDateString()}
-          </Text>
-        </Flex>
-      </Flex>
+          </span>
+        </div>
+      </div>
 
-      <Flex gap="2">
+      <div className="flex gap-2">
         <Button
           size="1"
           variant="soft"
@@ -44,14 +43,13 @@ function AppItem({ app }: { app: App }) {
         </Button>
         <Button
           size="1"
-          variant="soft"
-          color="red"
+          variant="danger"
           onClick={handleDelete}
         >
           Delete
         </Button>
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }
 
@@ -59,40 +57,40 @@ export function AppsSection() {
   const { data: apps = [], isLoading } = useQuery(appsQueryOptions)
 
   return (
-    <Box className="p-6 h-full flex flex-col">
-      <Flex justify="between" align="center" className="mb-6">
-        <Text size="5" weight="bold" className="text-white">
+    <div className="p-6 h-full flex flex-col">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-white">
           Apps
-        </Text>
-        <Text size="2" className="text-slate-500">
+        </h2>
+        <span className="text-sm text-slate-500">
           {apps.length} {apps.length === 1 ? 'app' : 'apps'}
-        </Text>
-      </Flex>
+        </span>
+      </div>
 
       {/* Apps List */}
-      <Box className="bg-slate-800/50 rounded-xl flex-1 overflow-hidden">
+      <div className="bg-slate-800/50 rounded-xl flex-1 overflow-hidden">
         {isLoading ? (
-          <Flex align="center" justify="center" className="h-full">
-            <Text size="2" className="text-slate-500">Loading...</Text>
-          </Flex>
+          <div className="flex items-center justify-center h-full">
+            <span className="text-sm text-slate-500">Loading...</span>
+          </div>
         ) : apps.length === 0 ? (
-          <Flex direction="column" align="center" justify="center" className="h-full py-12">
-            <Box className="text-5xl mb-4 opacity-50">📱</Box>
-            <Text size="3" className="text-slate-400 mb-2">No apps yet</Text>
-            <Text size="2" className="text-slate-500">
+          <div className="flex flex-col items-center justify-center h-full py-12">
+            <span className="text-5xl mb-4 opacity-50">📱</span>
+            <span className="text-base text-slate-400 mb-2">No apps yet</span>
+            <span className="text-sm text-slate-500">
               Use the prompt bar to create your first app
-            </Text>
-          </Flex>
+            </span>
+          </div>
         ) : (
           <ScrollArea className="h-full">
-            <Box className="p-2">
+            <div className="p-2">
               {apps.map((app) => (
                 <AppItem key={app.id} app={app} />
               ))}
-            </Box>
+            </div>
           </ScrollArea>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }

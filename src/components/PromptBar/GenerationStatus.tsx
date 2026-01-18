@@ -1,5 +1,5 @@
-import { Box, Flex, Text, Progress } from '@radix-ui/themes'
 import { useStore } from '@nanostores/react'
+import { Progress } from '../ui/Progress'
 import { generation } from '../../stores/generation'
 import { streaming } from '../../stores/streaming'
 
@@ -27,47 +27,46 @@ export function GenerationStatus() {
   }
 
   return (
-    <Box className="bg-slate-800/90 rounded-lg p-3 backdrop-blur-md">
-      <Flex direction="column" gap="2">
+    <div className="bg-slate-800/90 rounded-lg p-3 backdrop-blur-md">
+      <div className="flex flex-col gap-2">
         {/* Current progress */}
-        <Flex justify="between" align="center">
-          <Text size="2" weight="medium" className="text-purple-300">
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-medium text-purple-300">
             {currentMessage}
-          </Text>
-          <Text size="1" className="text-slate-400">
+          </span>
+          <span className="text-xs text-slate-400">
             {currentProgress}%
-          </Text>
-        </Flex>
+          </span>
+        </div>
 
         <Progress value={currentProgress} max={100} />
 
         {/* Recent progress deltas */}
         {recentDeltas.length > 0 && (
-          <Flex direction="column" gap="1" className="mt-1">
+          <div className="flex flex-col gap-1 mt-1">
             {recentDeltas.map((delta, index) => (
-              <Flex key={delta.timestamp} align="center" gap="2">
-                <Box
+              <div key={delta.timestamp} className="flex items-center gap-2">
+                <div
                   className={`w-1 h-1 rounded-full ${
                     index === recentDeltas.length - 1
                       ? 'bg-purple-400'
                       : 'bg-slate-600'
                   }`}
                 />
-                <Text
-                  size="1"
-                  className={`${
+                <span
+                  className={`text-xs ${
                     index === recentDeltas.length - 1
                       ? 'text-purple-300'
                       : 'text-slate-500'
                   }`}
                 >
                   {delta.message} ({delta.progress}%)
-                </Text>
-              </Flex>
+                </span>
+              </div>
             ))}
-          </Flex>
+          </div>
         )}
-      </Flex>
-    </Box>
+      </div>
+    </div>
   )
 }

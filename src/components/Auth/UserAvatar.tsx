@@ -1,5 +1,4 @@
-import { Flex, Text } from '@radix-ui/themes'
-import { getAvatarById, getAvatarStyle, getInitials, type Avatar } from '../OOBE/data/avatars'
+import { getAvatarById, getAvatarStyle, getInitials } from '../OOBE/data/avatars'
 
 interface UserAvatarProps {
   avatarId?: string
@@ -17,41 +16,37 @@ const sizeMap = {
 }
 
 const fontSizeMap = {
-  sm: '4',
-  md: '6',
-  lg: '8',
-  xl: '9',
-} as const
+  sm: 'text-base',
+  md: 'text-xl',
+  lg: 'text-3xl',
+  xl: 'text-4xl',
+}
 
 export function UserAvatar({ avatarId, name, email, size = 'md', className = '' }: UserAvatarProps) {
   const pixelSize = sizeMap[size]
-  const fontSize = fontSizeMap[size]
+  const fontClass = fontSizeMap[size]
   const avatar = avatarId ? getAvatarById(avatarId) : null
 
   // If we have an avatar ID, use it
   if (avatar) {
     if (avatar.type === 'emoji') {
       return (
-        <Flex
-          align="center"
-          justify="center"
-          className={`rounded-full bg-slate-800 ${className}`}
+        <div
+          className={`flex items-center justify-center rounded-full bg-slate-800 ${className}`}
           style={{
             width: pixelSize,
             height: pixelSize,
           }}
         >
           <span style={{ fontSize: pixelSize * 0.5 }}>{avatar.emoji}</span>
-        </Flex>
+        </div>
       )
     }
 
     // Gradient avatar
     return (
-      <Flex
-        align="center"
-        justify="center"
-        className={`rounded-full ${className}`}
+      <div
+        className={`flex items-center justify-center rounded-full ${className}`}
         style={{
           width: pixelSize,
           height: pixelSize,
@@ -59,11 +54,11 @@ export function UserAvatar({ avatarId, name, email, size = 'md', className = '' 
         }}
       >
         {name && (
-          <Text size={fontSize} weight="bold" className="text-white">
+          <span className={`${fontClass} font-bold text-white`}>
             {getInitials(name)}
-          </Text>
+          </span>
         )}
-      </Flex>
+      </div>
     )
   }
 
@@ -72,19 +67,17 @@ export function UserAvatar({ avatarId, name, email, size = 'md', className = '' 
   const initials = getInitials(displayName)
 
   return (
-    <Flex
-      align="center"
-      justify="center"
-      className={`rounded-full ${className}`}
+    <div
+      className={`flex items-center justify-center rounded-full ${className}`}
       style={{
         width: pixelSize,
         height: pixelSize,
         background: 'linear-gradient(135deg, #8B5CF6, #D946EF)',
       }}
     >
-      <Text size={fontSize} weight="bold" className="text-white">
+      <span className={`${fontClass} font-bold text-white`}>
         {initials}
-      </Text>
-    </Flex>
+      </span>
+    </div>
   )
 }

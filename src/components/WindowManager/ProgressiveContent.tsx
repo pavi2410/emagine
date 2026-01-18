@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Box, Flex, Spinner, Text } from '@radix-ui/themes'
+import { Spinner } from '../ui/Spinner'
 import { appsQueryOptions, getAppUrl } from '../../queries/apps'
 
 interface ProgressiveContentProps {
@@ -29,67 +29,53 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
 
   if (!app) {
     return (
-      <Flex align="center" justify="center" style={{ height: '100%' }}>
-        <Text size="2" color="gray">
+      <div className="flex items-center justify-center h-full">
+        <span className="text-sm text-slate-500">
           App not found
-        </Text>
-      </Flex>
+        </span>
+      </div>
     )
   }
 
   // Show loading state for generating apps
   if (app.status === 'generating') {
     return (
-      <Flex align="center" justify="center" direction="column" gap="3" style={{ height: '100%' }}>
+      <div className="flex items-center justify-center flex-col gap-3 h-full">
         <Spinner size="3" />
-        <Text size="2" color="gray">
+        <span className="text-sm text-slate-500">
           Generating app...
-        </Text>
-      </Flex>
+        </span>
+      </div>
     )
   }
 
   // Show error state
   if (app.status === 'error' || hasError) {
     return (
-      <Flex align="center" justify="center" direction="column" gap="2" style={{ height: '100%' }}>
-        <Text size="2" color="red">
+      <div className="flex items-center justify-center flex-col gap-2 h-full">
+        <span className="text-sm text-red-500">
           Failed to load app
-        </Text>
-        <Text size="1" color="gray">
+        </span>
+        <span className="text-xs text-slate-500">
           Please try regenerating
-        </Text>
-      </Flex>
+        </span>
+      </div>
     )
   }
 
   // Load app from server URL
   return (
-    <Box style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div className="relative w-full h-full">
       {/* Loading overlay */}
       {isLoading && (
-        <Flex
-          align="center"
-          justify="center"
-          direction="column"
-          gap="3"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 10,
-            pointerEvents: 'none',
-          }}
+        <div
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm z-10 pointer-events-none flex items-center justify-center flex-col gap-3"
         >
           <Spinner size="3" />
-          <Text size="2" color="gray">
+          <span className="text-sm text-slate-400">
             Loading app...
-          </Text>
-        </Flex>
+          </span>
+        </div>
       )}
 
       {/* iframe loads app from server URL */}
@@ -106,6 +92,6 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
         }}
         sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
       />
-    </Box>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
-import { Flex, Text, Button } from '@radix-ui/themes'
 import { motion } from 'motion/react'
+import { Button } from '../../ui/Button'
 import { WALLPAPERS } from '../data/wallpapers'
 import type { OOBEData } from '../hooks/useOOBE'
 
@@ -17,11 +17,8 @@ export function PersonalizationStep({
   onBack,
 }: PersonalizationStepProps) {
   return (
-    <Flex
-      direction="column"
-      align="center"
-      gap="6"
-      className="px-8 w-full max-w-lg"
+    <div
+      className="flex flex-col items-center gap-6 px-8 w-full max-w-lg"
     >
       {/* Title */}
       <motion.div
@@ -30,12 +27,12 @@ export function PersonalizationStep({
         transition={{ delay: 0.1 }}
         className="text-center"
       >
-        <Text size="7" weight="bold" className="text-white block mb-2">
+        <h1 className="text-2xl font-bold text-white mb-2">
           Make it yours
-        </Text>
-        <Text size="2" className="text-slate-300">
+        </h1>
+        <p className="text-sm text-slate-300">
           Choose a wallpaper for your desktop
-        </Text>
+        </p>
       </motion.div>
 
       {/* Wallpaper selection */}
@@ -71,9 +68,9 @@ export function PersonalizationStep({
 
               {/* Wallpaper name */}
               <div className="absolute bottom-0 left-0 right-0 bg-black/50 px-2 py-1">
-                <Text size="1" className="text-white">
+                <span className="text-xs text-white">
                   {wallpaper.name}
-                </Text>
+                </span>
               </div>
 
               {/* Selected checkmark */}
@@ -110,9 +107,9 @@ export function PersonalizationStep({
         transition={{ delay: 0.4 }}
         className="text-center"
       >
-        <Text size="1" className="text-slate-400">
+        <span className="text-xs text-slate-400">
           You can change this anytime in Settings
-        </Text>
+        </span>
       </motion.div>
 
       {/* Navigation */}
@@ -129,6 +126,6 @@ export function PersonalizationStep({
           Continue
         </Button>
       </motion.div>
-    </Flex>
+    </div>
   )
 }

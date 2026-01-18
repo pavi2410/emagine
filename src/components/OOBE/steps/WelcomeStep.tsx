@@ -1,5 +1,5 @@
-import { Flex, Text, Button } from '@radix-ui/themes'
 import { motion } from 'motion/react'
+import { Button } from '../../ui/Button'
 
 interface WelcomeStepProps {
   onNext: () => void
@@ -7,12 +7,8 @@ interface WelcomeStepProps {
 
 export function WelcomeStep({ onNext }: WelcomeStepProps) {
   return (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      gap="8"
-      className="text-center px-8"
+    <div
+      className="flex flex-col items-center justify-center gap-8 text-center px-8"
     >
       {/* Animated logo */}
       <motion.div
@@ -34,9 +30,9 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
               background: 'linear-gradient(135deg, #8B5CF6, #D946EF)',
             }}
           >
-            <Text size="9" weight="bold" className="text-white">
+            <span className="text-5xl font-bold text-white">
               e
-            </Text>
+            </span>
           </div>
         </div>
       </motion.div>
@@ -47,12 +43,12 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <Text size="8" weight="bold" className="text-white block mb-2">
+        <h1 className="text-3xl font-bold text-white mb-2">
           Welcome to emagine
-        </Text>
-        <Text size="3" className="text-slate-300 max-w-md">
+        </h1>
+        <p className="text-base text-slate-300 max-w-md">
           The AI-powered generative desktop where you can create any app you imagine
-        </Text>
+        </p>
       </motion.div>
 
       {/* Get started button */}
@@ -61,10 +57,10 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.6 }}
       >
-        <Button size="4" onClick={onNext}>
+        <Button size="3" onClick={onNext}>
           Get Started
         </Button>
       </motion.div>
-    </Flex>
+    </div>
   )
 }

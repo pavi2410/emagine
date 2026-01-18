@@ -1,7 +1,8 @@
-import { Box, Flex, TextField, IconButton } from '@radix-ui/themes'
-import { PaperPlaneIcon } from '@radix-ui/react-icons'
+import { IconSend } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useStore } from '@nanostores/react'
+import { Input } from '../ui/Input'
+import { IconButton } from '../ui/IconButton'
 import { generation } from '../../stores/generation'
 import { AIReasoning } from './AIReasoning'
 import { useAppGeneration } from '../../hooks/useAppGeneration'
@@ -21,14 +22,14 @@ export function PromptBar() {
   }
 
   return (
-    <Box className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent backdrop-blur-sm">
-      <Flex direction="column" gap="3" className="max-w-3xl mx-auto">
+    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent backdrop-blur-sm">
+      <div className="flex flex-col gap-3 max-w-3xl mx-auto">
         <AIReasoning />
 
         <form onSubmit={handleSubmit}>
-          <Flex gap="2" align="center">
-            <TextField.Root
-              size="3"
+          <div className="flex gap-2 items-center">
+            <Input
+              inputSize="3"
               placeholder="💭 What do you want to build?"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -40,11 +41,11 @@ export function PromptBar() {
               size="3"
               disabled={!prompt.trim() || $generation.isGenerating}
             >
-              <PaperPlaneIcon width="18" height="18" />
+              <IconSend size={18} />
             </IconButton>
-          </Flex>
+          </div>
         </form>
-      </Flex>
-    </Box>
+      </div>
+    </div>
   )
 }

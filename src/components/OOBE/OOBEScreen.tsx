@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Flex } from '@radix-ui/themes'
 import { motion, AnimatePresence } from 'motion/react'
 import { useOOBE } from './hooks/useOOBE'
 import { OOBEProgress } from './OOBEProgress'
@@ -121,16 +120,12 @@ export function OOBEScreen({ initialName = '', onComplete }: OOBEScreenProps) {
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
-      <Flex
-        direction="column"
-        className="relative z-10 min-h-screen"
+      <div
+        className="flex flex-col relative z-10 min-h-screen"
       >
         {/* Main content area */}
-        <Flex
-          direction="column"
-          align="center"
-          justify="center"
-          className="flex-1 overflow-hidden"
+        <div
+          className="flex flex-col items-center justify-center flex-1 overflow-hidden"
         >
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
@@ -146,7 +141,7 @@ export function OOBEScreen({ initialName = '', onComplete }: OOBEScreenProps) {
               {renderStep()}
             </motion.div>
           </AnimatePresence>
-        </Flex>
+        </div>
 
         {/* Progress indicator at bottom */}
         {currentStep > 0 && (
@@ -158,7 +153,7 @@ export function OOBEScreen({ initialName = '', onComplete }: OOBEScreenProps) {
             <OOBEProgress currentStep={currentStep} totalSteps={totalSteps} />
           </motion.div>
         )}
-      </Flex>
+      </div>
     </motion.div>
   )
 }

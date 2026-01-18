@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Box, Button, Flex, Text, TextField } from '@radix-ui/themes'
 import { motion, AnimatePresence } from 'motion/react'
+import { Button } from '../ui/Button'
+import { Input } from '../ui/Input'
 import { signIn, signUp } from '../../lib/auth-client'
 import { UserAvatar } from './UserAvatar'
 import { getWallpaperStyle } from '../OOBE/data/wallpapers'
@@ -127,11 +128,8 @@ export function SignInScreen({ onSuccess }: SignInScreenProps) {
       <div className="absolute inset-0 bg-black/30" />
 
       {/* Content */}
-      <Flex
-        direction="column"
-        align="center"
-        justify="center"
-        className="relative z-10 min-h-screen p-4"
+      <div
+        className="flex flex-col items-center justify-center relative z-10 min-h-screen p-4"
       >
         <AnimatePresence mode="wait">
           {mode === 'signin' ? (
@@ -167,7 +165,7 @@ export function SignInScreen({ onSuccess }: SignInScreenProps) {
             />
           )}
         </AnimatePresence>
-      </Flex>
+      </div>
     </motion.div>
   )
 }
@@ -236,13 +234,13 @@ function SignInForm({
         className="text-center"
       >
         {hasRememberedUser ? (
-          <Text size="5" weight="medium" className="text-white">
+          <span className="text-xl font-medium text-white">
             {rememberedName || rememberedEmail?.split('@')[0]}
-          </Text>
+          </span>
         ) : (
-          <Text size="6" weight="bold" className="text-white">
+          <span className="text-2xl font-bold text-white">
             Sign In
-          </Text>
+          </span>
         )}
       </motion.div>
 
@@ -254,18 +252,13 @@ function SignInForm({
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.25 }}
           >
-            <TextField.Root
-              size="3"
+            <Input
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              className="w-full"
-              style={{
-                background: 'rgba(255,255,255,0.1)',
-                borderColor: 'rgba(255,255,255,0.2)',
-              }}
+              className="w-full bg-white/10 border-white/20"
             />
           </motion.div>
         )}
@@ -275,18 +268,13 @@ function SignInForm({
           animate={error ? { x: [0, -10, 10, -10, 10, 0] } : { y: 0, opacity: 1 }}
           transition={error ? { duration: 0.4 } : { delay: hasRememberedUser ? 0.25 : 0.3 }}
         >
-          <TextField.Root
-            size="3"
+          <Input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             required
-            className="w-full"
-            style={{
-              background: 'rgba(255,255,255,0.1)',
-              borderColor: 'rgba(255,255,255,0.2)',
-            }}
+            className="w-full bg-white/10 border-white/20"
           />
         </motion.div>
 
@@ -295,9 +283,9 @@ function SignInForm({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <Text size="2" color="red" className="block text-center">
+            <span className="text-sm text-red-500 block text-center">
               {error}
-            </Text>
+            </span>
           </motion.div>
         )}
 
@@ -394,9 +382,9 @@ function SignUpForm({
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        <Text size="6" weight="bold" className="text-white">
+        <span className="text-2xl font-bold text-white">
           Create Account
-        </Text>
+        </span>
       </motion.div>
 
       {/* Form */}
@@ -406,17 +394,12 @@ function SignUpForm({
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.25 }}
         >
-          <TextField.Root
-            size="3"
+          <Input
             type="text"
             placeholder="Your name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full"
-            style={{
-              background: 'rgba(255,255,255,0.1)',
-              borderColor: 'rgba(255,255,255,0.2)',
-            }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            className="w-full bg-white/10 border-white/20"
           />
         </motion.div>
 
@@ -425,18 +408,13 @@ function SignUpForm({
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <TextField.Root
-            size="3"
+          <Input
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             required
-            className="w-full"
-            style={{
-              background: 'rgba(255,255,255,0.1)',
-              borderColor: 'rgba(255,255,255,0.2)',
-            }}
+            className="w-full bg-white/10 border-white/20"
           />
         </motion.div>
 
@@ -445,19 +423,14 @@ function SignUpForm({
           animate={error ? { x: [0, -10, 10, -10, 10, 0] } : { y: 0, opacity: 1 }}
           transition={error ? { duration: 0.4 } : { delay: 0.35 }}
         >
-          <TextField.Root
-            size="3"
+          <Input
             type="password"
             placeholder="Password (min 8 characters)"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full"
-            style={{
-              background: 'rgba(255,255,255,0.1)',
-              borderColor: 'rgba(255,255,255,0.2)',
-            }}
+            className="w-full bg-white/10 border-white/20"
           />
         </motion.div>
 
@@ -466,9 +439,9 @@ function SignUpForm({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <Text size="2" color="red" className="block text-center">
+            <span className="text-sm text-red-500 block text-center">
               {error}
-            </Text>
+            </span>
           </motion.div>
         )}
 

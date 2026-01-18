@@ -1,5 +1,6 @@
-import { Flex, Text, TextField, Button, Box } from '@radix-ui/themes'
 import { motion } from 'motion/react'
+import { Button } from '../../ui/Button'
+import { Input } from '../../ui/Input'
 import { AVATARS, getAvatarStyle, type Avatar } from '../data/avatars'
 import type { OOBEData } from '../hooks/useOOBE'
 
@@ -14,11 +15,8 @@ export function ProfileSetupStep({ data, onUpdate, onNext, onBack }: ProfileSetu
   const selectedAvatar = AVATARS.find((a) => a.id === data.avatar) || AVATARS[0]
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      gap="6"
-      className="px-8 w-full max-w-md"
+    <div
+      className="flex flex-col items-center gap-6 px-8 w-full max-w-md"
     >
       {/* Title */}
       <motion.div
@@ -27,12 +25,12 @@ export function ProfileSetupStep({ data, onUpdate, onNext, onBack }: ProfileSetu
         transition={{ delay: 0.1 }}
         className="text-center"
       >
-        <Text size="7" weight="bold" className="text-white block mb-2">
+        <h1 className="text-2xl font-bold text-white mb-2">
           Set up your profile
-        </Text>
-        <Text size="2" className="text-slate-300">
+        </h1>
+        <p className="text-sm text-slate-300">
           Choose how you want to appear
-        </Text>
+        </p>
       </motion.div>
 
       {/* Selected avatar preview */}
@@ -52,19 +50,15 @@ export function ProfileSetupStep({ data, onUpdate, onNext, onBack }: ProfileSetu
         transition={{ delay: 0.3 }}
         className="w-full"
       >
-        <Text size="2" className="text-slate-400 mb-2 block">
+        <label className="text-sm text-slate-400 mb-2 block">
           Your name
-        </Text>
-        <TextField.Root
-          size="3"
+        </label>
+        <Input
+          inputSize="3"
           placeholder="Enter your name"
           value={data.name}
           onChange={(e) => onUpdate({ name: e.target.value })}
-          className="w-full"
-          style={{
-            background: 'rgba(255,255,255,0.1)',
-            borderColor: 'rgba(255,255,255,0.2)',
-          }}
+          className="w-full bg-white/10 border-white/20"
         />
       </motion.div>
 
@@ -75,9 +69,9 @@ export function ProfileSetupStep({ data, onUpdate, onNext, onBack }: ProfileSetu
         transition={{ delay: 0.4 }}
         className="w-full"
       >
-        <Text size="2" className="text-slate-400 mb-3 block">
+        <span className="text-sm text-slate-400 mb-3 block">
           Choose an avatar
-        </Text>
+        </span>
         <div className="grid grid-cols-6 gap-3">
           {AVATARS.map((avatar, index) => (
             <motion.button
@@ -112,7 +106,7 @@ export function ProfileSetupStep({ data, onUpdate, onNext, onBack }: ProfileSetu
           Continue
         </Button>
       </motion.div>
-    </Flex>
+    </div>
   )
 }
 
@@ -127,14 +121,12 @@ function AvatarDisplay({
 }) {
   if (avatar.type === 'emoji') {
     return (
-      <Flex
-        align="center"
-        justify="center"
-        className="rounded-full bg-slate-700"
+      <div
+        className="flex items-center justify-center rounded-full bg-slate-700"
         style={{ width: size, height: size }}
       >
         <span style={{ fontSize: size * 0.5 }}>{avatar.emoji}</span>
-      </Flex>
+      </div>
     )
   }
 
@@ -148,10 +140,8 @@ function AvatarDisplay({
     : ''
 
   return (
-    <Flex
-      align="center"
-      justify="center"
-      className="rounded-full"
+    <div
+      className="flex items-center justify-center rounded-full"
       style={{
         width: size,
         height: size,
@@ -159,14 +149,13 @@ function AvatarDisplay({
       }}
     >
       {name && (
-        <Text
-          weight="bold"
-          className="text-white"
+        <span
+          className="font-bold text-white"
           style={{ fontSize: size * 0.35 }}
         >
           {initials}
-        </Text>
+        </span>
       )}
-    </Flex>
+    </div>
   )
 }

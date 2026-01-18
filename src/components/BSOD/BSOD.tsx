@@ -1,5 +1,3 @@
-import { Box, Flex, Text, Button, Code } from '@radix-ui/themes'
-
 interface BSODProps {
   errorCode: string
   message: string
@@ -8,47 +6,45 @@ interface BSODProps {
 
 export function BSOD({ errorCode, message, onRestart }: BSODProps) {
   return (
-    <Box className="fixed inset-0 z-[9999] bg-blue-600 flex items-center justify-center p-8">
-      <Flex direction="column" gap="6" className="max-w-2xl">
-        <Text size="8" weight="bold" className="text-white">
+    <div className="fixed inset-0 z-[9999] bg-blue-600 flex items-center justify-center p-8">
+      <div className="flex flex-col gap-6 max-w-2xl">
+        <span className="text-3xl font-bold text-white">
           :(
-        </Text>
+        </span>
 
-        <Flex direction="column" gap="4">
-          <Text size="5" weight="medium" className="text-white">
+        <div className="flex flex-col gap-4">
+          <h1 className="text-xl font-medium text-white">
             Your AI Desktop ran into a problem and needs to restart.
-          </Text>
+          </h1>
 
-          <Text size="3" className="text-blue-100">
+          <p className="text-base text-blue-100">
             {message}
-          </Text>
+          </p>
 
-          <Code className="bg-blue-800 text-blue-100 p-4 rounded">
+          <code className="bg-blue-800 text-blue-100 p-4 rounded font-mono text-sm">
             Error Code: {errorCode}
-          </Code>
+          </code>
 
-          <Text size="2" className="text-blue-200">
+          <p className="text-sm text-blue-200">
             If you call the support person, give them this info:
             <br />
             STOP: 0x{errorCode.padStart(8, '0')}
-          </Text>
-        </Flex>
+          </p>
+        </div>
 
         {onRestart && (
-          <Button
-            size="3"
-            variant="solid"
+          <button
             onClick={onRestart}
-            className="bg-white text-blue-600 hover:bg-blue-50 cursor-pointer"
+            className="bg-white text-blue-600 hover:bg-blue-50 cursor-pointer px-4 py-2 rounded-md font-medium"
           >
             Restart Desktop
-          </Button>
+          </button>
         )}
 
-        <Text size="1" className="text-blue-300">
+        <span className="text-xs text-blue-300">
           🤖 Generated with Emagine - AI Desktop Environment
-        </Text>
-      </Flex>
-    </Box>
+        </span>
+      </div>
+    </div>
   )
 }

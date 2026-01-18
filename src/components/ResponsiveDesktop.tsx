@@ -8,7 +8,7 @@ import { SignInScreen } from './Auth/SignInScreen'
 import { OOBEScreen } from './OOBE/OOBEScreen'
 import { useSession } from '../lib/auth-client'
 import { settingsQueryOptions } from '../queries/settings'
-import { Flex, Spinner, Text } from '@radix-ui/themes'
+import { Spinner } from './ui/Spinner'
 
 export function ResponsiveDesktop() {
   const [isMobile, setIsMobile] = useState(false)
@@ -31,19 +31,15 @@ export function ResponsiveDesktop() {
   // Show loading while checking auth
   if (isSessionPending) {
     return (
-      <Flex
-        align="center"
-        justify="center"
-        direction="column"
-        gap="3"
+      <div
+        className="flex items-center justify-center flex-col gap-3 min-h-screen"
         style={{
-          minHeight: '100vh',
           background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)',
         }}
       >
         <Spinner size="3" />
-        <Text className="text-slate-400">Loading...</Text>
-      </Flex>
+        <span className="text-slate-400">Loading...</span>
+      </div>
     )
   }
 
@@ -55,19 +51,15 @@ export function ResponsiveDesktop() {
   // Show loading while fetching settings
   if (isSettingsPending) {
     return (
-      <Flex
-        align="center"
-        justify="center"
-        direction="column"
-        gap="3"
+      <div
+        className="flex items-center justify-center flex-col gap-3 min-h-screen"
         style={{
-          minHeight: '100vh',
           background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)',
         }}
       >
         <Spinner size="3" />
-        <Text className="text-slate-400">Setting up...</Text>
-      </Flex>
+        <span className="text-slate-400">Setting up...</span>
+      </div>
     )
   }
 
