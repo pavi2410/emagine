@@ -139,3 +139,97 @@ export function subscribeToAppUpdates(
 export function getAppUrl(appId: string): string {
   return `/api/apps/${appId}/serve`
 }
+
+// Version types
+export interface AppVersion {
+  id: string
+  version: number
+  prompt?: string
+  createdAt: string
+  isCurrent: boolean
+}
+
+export interface VersionsResponse {
+  versions: AppVersion[]
+  currentVersion: number
+}
+
+// Regenerate app mutation
+export function useRegenerateApp() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      appId,
+      prompt,
+    }: {
+      appId: string
+      prompt?: string
+    }): Promise<{ success: boolean; streamUrl: string }> => {
+      const res = await fetch(`/api/apps/${appId}/regenerate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ prompt }),
+      })
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: 'Regeneration failed' }))
+        throw new Error(error.error || 'Regeneration failed')
+      }
+      return res.json()
+    },
+    onSuccess: (_, { appId }) => {
+      // Update app status to generating
+      queryClient.setQueryData<App[]>(['apps'], (old) =>
+        old?.map((app) =>
+          app.id === appId ? { ...app, status: 'generating' as const } : app
+        )
+      )
+    },
+  })
+}
+
+// Get app versions
+export function appVersionsQueryOptions(appId: string) {
+  return queryOptions({
+    queryKey: ['app-versions', appId],
+    queryFn: async (): Promise<VersionsResponse> => {
+      const res = await fetch(`/api/apps/${appId}/versions`, {
+        credentials: 'include',
+      })
+      if (!res.ok) throw new Error('Failed to fetch versions')
+      return res.json()
+    },
+    enabled: !!appId,
+  })
+}
+
+// Restore version mutation
+export function useRestoreVersion() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      appId,
+      versionId,
+    }: {
+      appId: string
+      versionId: string
+    }): Promise<{ success: boolean; restoredVersion: number }> => {
+      const res = await fetch(`/api/apps/${appId}/versions/${versionId}/restore`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: 'Restore failed' }))
+        throw new Error(error.error || 'Restore failed')
+      }
+      return res.json()
+    },
+    onSuccess: (_, { appId }) => {
+      // Invalidate app and versions queries
+      queryClient.invalidateQueries({ queryKey: ['apps'] })
+      queryClient.invalidateQueries({ queryKey: ['app-versions', appId] })
+    },
+  })
+}

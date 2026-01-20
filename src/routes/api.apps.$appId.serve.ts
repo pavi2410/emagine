@@ -36,8 +36,18 @@ export const Route = createFileRoute('/api/apps/$appId/serve')({
             headers: {
               'Content-Type': 'text/html; charset=utf-8',
               'X-Frame-Options': 'SAMEORIGIN',
-              'Content-Security-Policy': "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:;",
-              'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+              'X-Content-Type-Options': 'nosniff',
+              'Referrer-Policy': 'strict-origin-when-cross-origin',
+              'Content-Security-Policy': [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+                "style-src 'self' 'unsafe-inline'",
+                "img-src 'self' data: blob: https:",
+                "font-src 'self' data:",
+                "connect-src 'self'",
+                "frame-ancestors 'self'",
+              ].join('; '),
+              'Cache-Control': 'private, max-age=3600',
             },
           })
         } catch (error) {

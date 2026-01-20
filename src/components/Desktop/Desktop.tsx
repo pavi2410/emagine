@@ -73,15 +73,18 @@ export function Desktop() {
         </button>
       </div>
 
-      {/* Desktop Icons - Right Side */}
-      <div className="absolute top-10 right-8 flex flex-col gap-4 items-end">
+      {/* Desktop Icons - Right Side, wrapping to columns */}
+      <div
+        className="absolute top-10 right-8 flex flex-col flex-wrap-reverse gap-4 items-end content-end"
+        style={{ maxHeight: 'calc(100vh - 240px)' }}
+      >
         {apps.map((app) => (
           <DesktopIcon key={app.id} app={app} />
         ))}
       </div>
 
-      {/* Trash Icon - Bottom Right (like macOS) */}
-      <div className="absolute bottom-24 right-8">
+      {/* Trash Icon - Bottom Right, fixed position (like macOS Dock) */}
+      <div className="absolute bottom-28 right-8">
         <TrashIcon />
       </div>
 

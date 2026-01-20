@@ -13,6 +13,52 @@ const openrouter = createOpenRouter({
 // Default model
 const DEFAULT_MODEL = 'mistralai/devstral-2512:free'
 
+/**
+ * Extract HTML from LLM response, handling markdown fences and extra text
+ */
+function extractHtml(response: string): string {
+  let html = response.trim()
+
+  // Extract from markdown fence if present
+  const fenceMatch = html.match(/```(?:html)?\n?([\s\S]*?)\n?```/)
+  if (fenceMatch) {
+    html = fenceMatch[1].trim()
+  }
+
+  // Find DOCTYPE and truncate any text before it
+  const doctypeIdx = html.toLowerCase().indexOf('<!doctype html>')
+  if (doctypeIdx > 0) {
+    html = html.substring(doctypeIdx)
+  }
+
+  // Find </html> and truncate any text after it
+  const closeIdx = html.toLowerCase().lastIndexOf('</html>')
+  if (closeIdx !== -1) {
+    html = html.substring(0, closeIdx + 7)
+  }
+
+  return html.trim()
+}
+
+/**
+ * Extract JSON from LLM response, handling markdown fences and extra text
+ */
+function extractJson(response: string): { name: string; icon: string; description: string } {
+  let json = response.trim()
+
+  // Remove markdown code fences
+  json = json.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
+
+  // Find JSON object boundaries
+  const first = json.indexOf('{')
+  const last = json.lastIndexOf('}')
+  if (first !== -1 && last > first) {
+    json = json.substring(first, last + 1)
+  }
+
+  return JSON.parse(json)
+}
+
 interface GenerateAppParams {
   prompt: string
   userId: string
@@ -67,27 +113,21 @@ async function generateAppAsync(
 
   try {
     // Step 1: Generate metadata
-    const metaPrompt = `For this request: "${prompt}"
+    const metaPrompt = `You are a JSON generator. Output ONLY valid JSON, no explanation.
+DO NOT wrap in code blocks. DO NOT add commentary.
 
-Generate app metadata in JSON format:
-{
-  "name": "App Name (2-4 words)",
-  "icon": "📱",
-  "description": "Brief description"
-}
-
-Only return the JSON, nothing else.`
+For: "${prompt}"
+Output: {"name": "2-4 word title", "icon": "single emoji", "description": "one sentence max 100 chars"}`
 
     const { text: metaJson } = await generateText({
       model: openrouter.chat(model),
       prompt: metaPrompt,
-      temperature: 0.7,
+      temperature: 0.3,
     })
 
     let metadata: { name: string; icon: string; description: string }
     try {
-      const cleanJson = metaJson.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-      metadata = JSON.parse(cleanJson)
+      metadata = extractJson(metaJson)
     } catch {
       console.error('Failed to parse metadata:', metaJson)
       metadata = {
@@ -107,36 +147,31 @@ Only return the JSON, nothing else.`
       .where(eq(apps.id, appId))
 
     // Step 2: Generate HTML
-    const htmlPrompt = `Create a complete, self-contained HTML app for: "${prompt}"
+    const htmlPrompt = `You are an HTML generator. Output ONLY valid HTML.
+
+CRITICAL RULES:
+1. Start with <!DOCTYPE html> - NO text before
+2. End with </html> - NO text after
+3. NO markdown code fences
+4. NO explanations
 
 Requirements:
-- Single HTML file with embedded CSS and JavaScript
-- Modern, beautiful UI using flexbox/grid
-- Fully functional and interactive
-- Responsive design
-- Good UX with smooth animations
-- No external dependencies
+- Single file with embedded <style> and <script>
+- Modern UI with CSS grid/flexbox
+- Responsive design, smooth animations
+- No external dependencies (no CDN)
 
-Return ONLY the HTML code, starting with <!DOCTYPE html>.`
+Build: "${prompt}"`
 
     const { text: html } = await generateText({
       model: openrouter.chat(model),
       prompt: htmlPrompt,
-      temperature: 0.5,
+      temperature: 0.4,
       maxOutputTokens: 8000,
     })
 
-    // Clean HTML
-    let cleanHtml = html.trim()
-    if (cleanHtml.startsWith('```html')) {
-      cleanHtml = cleanHtml.replace(/^```html\n?/, '')
-    }
-    if (cleanHtml.startsWith('```')) {
-      cleanHtml = cleanHtml.replace(/^```\n?/, '')
-    }
-    if (cleanHtml.endsWith('```')) {
-      cleanHtml = cleanHtml.replace(/\n?```$/, '')
-    }
+    // Clean HTML - extract only the HTML content
+    const cleanHtml = extractHtml(html)
 
     // Save HTML to S3
     const storagePath = await saveAppHtml(appId, cleanHtml)
@@ -159,6 +194,77 @@ Return ONLY the HTML code, starting with <!DOCTYPE html>.`
 
   } catch (error) {
     console.error('Generation error:', error)
+
+    await db.update(apps).set({
+      status: 'error',
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      updatedAt: new Date(),
+    }).where(eq(apps.id, appId))
+  }
+}
+
+/**
+ * Regenerate app HTML only (keeps existing metadata)
+ * Used when user edits prompt and wants to regenerate
+ */
+export async function regenerateAppHtml(
+  appId: string,
+  prompt: string,
+  model: string,
+  version: number
+): Promise<void> {
+  const startTime = Date.now()
+
+  try {
+    // Generate HTML
+    const htmlPrompt = `You are an HTML generator. Output ONLY valid HTML.
+
+CRITICAL RULES:
+1. Start with <!DOCTYPE html> - NO text before
+2. End with </html> - NO text after
+3. NO markdown code fences
+4. NO explanations
+
+Requirements:
+- Single file with embedded <style> and <script>
+- Modern UI with CSS grid/flexbox
+- Responsive design, smooth animations
+- No external dependencies (no CDN)
+
+Build: "${prompt}"`
+
+    const { text: html } = await generateText({
+      model: openrouter.chat(model),
+      prompt: htmlPrompt,
+      temperature: 0.4,
+      maxOutputTokens: 8000,
+    })
+
+    // Clean HTML
+    const cleanHtml = extractHtml(html)
+
+    // Save HTML to S3
+    const storagePath = await saveAppHtml(appId, cleanHtml)
+
+    // Update app
+    await db.update(apps).set({
+      htmlStoragePath: storagePath,
+      prompt,
+      status: 'ready',
+      generationTimeMs: Date.now() - startTime,
+      updatedAt: new Date(),
+    }).where(eq(apps.id, appId))
+
+    // Create version record
+    await db.insert(appVersions).values({
+      appId,
+      version,
+      htmlStoragePath: storagePath,
+      prompt,
+    })
+
+  } catch (error) {
+    console.error('Regeneration error:', error)
 
     await db.update(apps).set({
       status: 'error',

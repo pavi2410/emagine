@@ -1,5 +1,7 @@
 import { atom, map } from 'nanostores'
 
+export type SnapZone = 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | null
+
 export interface WindowState {
   id: string
   appId: string
@@ -10,7 +12,14 @@ export interface WindowState {
   zIndex: number
   isMinimized: boolean
   isMaximized: boolean
+  snapZone?: SnapZone
   preMaximizeState?: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }
+  preSnapState?: {
     x: number
     y: number
     width: number
@@ -20,6 +29,103 @@ export interface WindowState {
 
 export const windows = map<Record<string, WindowState>>({})
 export const maxZIndex = atom<number>(1000)
+export const activeSnapPreview = atom<SnapZone>(null)
+
+// Snap zone detection thresholds
+const EDGE_THRESHOLD = 20 // pixels from edge to trigger snap
+const TOP_BAR_HEIGHT = 28
+
+export function detectSnapZone(x: number, y: number): SnapZone {
+  const screenWidth = window.innerWidth
+  const screenHeight = window.innerHeight
+  const nearLeft = x <= EDGE_THRESHOLD
+  const nearRight = x >= screenWidth - EDGE_THRESHOLD
+  const nearTop = y <= TOP_BAR_HEIGHT + EDGE_THRESHOLD
+  const nearBottom = y >= screenHeight - EDGE_THRESHOLD
+
+  // Corner snaps (quarter screen)
+  if (nearLeft && nearTop) return 'top-left'
+  if (nearRight && nearTop) return 'top-right'
+  if (nearLeft && nearBottom) return 'bottom-left'
+  if (nearRight && nearBottom) return 'bottom-right'
+
+  // Edge snaps (half screen)
+  if (nearLeft) return 'left'
+  if (nearRight) return 'right'
+
+  return null
+}
+
+export function getSnapDimensions(zone: SnapZone): { x: number; y: number; width: number; height: number } | null {
+  if (!zone) return null
+
+  const screenWidth = window.innerWidth
+  const screenHeight = window.innerHeight
+  const availableHeight = screenHeight - TOP_BAR_HEIGHT
+
+  switch (zone) {
+    case 'left':
+      return { x: 0, y: TOP_BAR_HEIGHT, width: screenWidth / 2, height: availableHeight }
+    case 'right':
+      return { x: screenWidth / 2, y: TOP_BAR_HEIGHT, width: screenWidth / 2, height: availableHeight }
+    case 'top-left':
+      return { x: 0, y: TOP_BAR_HEIGHT, width: screenWidth / 2, height: availableHeight / 2 }
+    case 'top-right':
+      return { x: screenWidth / 2, y: TOP_BAR_HEIGHT, width: screenWidth / 2, height: availableHeight / 2 }
+    case 'bottom-left':
+      return { x: 0, y: TOP_BAR_HEIGHT + availableHeight / 2, width: screenWidth / 2, height: availableHeight / 2 }
+    case 'bottom-right':
+      return { x: screenWidth / 2, y: TOP_BAR_HEIGHT + availableHeight / 2, width: screenWidth / 2, height: availableHeight / 2 }
+    default:
+      return null
+  }
+}
+
+export function setSnapPreview(zone: SnapZone) {
+  activeSnapPreview.set(zone)
+}
+
+export function snapWindow(id: string, zone: SnapZone) {
+  const win = windows.get()[id]
+  if (!win || !zone) return
+
+  const dims = getSnapDimensions(zone)
+  if (!dims) return
+
+  // Save current state for unsnapping
+  const preSnapState = win.preSnapState || {
+    x: win.x,
+    y: win.y,
+    width: win.width,
+    height: win.height,
+  }
+
+  windows.setKey(id, {
+    ...win,
+    x: dims.x,
+    y: dims.y,
+    width: dims.width,
+    height: dims.height,
+    snapZone: zone,
+    preSnapState,
+    isMaximized: false,
+  })
+}
+
+export function unsnapWindow(id: string) {
+  const win = windows.get()[id]
+  if (!win || !win.preSnapState) return
+
+  windows.setKey(id, {
+    ...win,
+    x: win.preSnapState.x,
+    y: win.preSnapState.y,
+    width: win.preSnapState.width,
+    height: win.preSnapState.height,
+    snapZone: undefined,
+    preSnapState: undefined,
+  })
+}
 
 export function openWindow(appId: string) {
   const id = crypto.randomUUID()

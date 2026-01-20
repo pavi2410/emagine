@@ -1,7 +1,17 @@
 import { Rnd } from 'react-rnd'
 import type { WindowState } from '../../stores/windows'
 import type { App } from '../../queries/apps'
-import { closeWindow, updateWindowPosition, updateWindowSize, bringToFront, minimizeWindow, toggleMaximize } from '../../stores/windows'
+import {
+  closeWindow,
+  updateWindowPosition,
+  updateWindowSize,
+  bringToFront,
+  minimizeWindow,
+  toggleMaximize,
+  detectSnapZone,
+  setSnapPreview,
+  snapWindow,
+} from '../../stores/windows'
 import { SettingsApp } from '../BuiltinApps/SettingsApp'
 import { TrashApp } from '../BuiltinApps/TrashApp'
 import { ProgressiveContent } from './ProgressiveContent'
@@ -30,6 +40,25 @@ export function Window({ window: win, app }: WindowProps) {
   const handleMinimize = () => minimizeWindow(win.id)
   const handleMaximize = () => toggleMaximize(win.id)
 
+  const handleDrag = (_e: unknown, d: { x: number; y: number }) => {
+    // Detect snap zone based on cursor position
+    const zone = detectSnapZone(d.x, d.y)
+    setSnapPreview(zone)
+  }
+
+  const handleDragStop = (_e: unknown, d: { x: number; y: number }) => {
+    const zone = detectSnapZone(d.x, d.y)
+    setSnapPreview(null)
+
+    if (zone) {
+      // Snap the window
+      snapWindow(win.id, zone)
+    } else if (!win.isMaximized) {
+      // Normal position update
+      updateWindowPosition(win.id, d.x, d.y)
+    }
+  }
+
   return (
     <Rnd
       position={{ x: win.x, y: win.y }}
@@ -37,12 +66,9 @@ export function Window({ window: win, app }: WindowProps) {
       minWidth={300}
       minHeight={200}
       style={{ zIndex: win.zIndex }}
-      onDragStop={(e, d) => {
-        if (!win.isMaximized) {
-          updateWindowPosition(win.id, d.x, d.y)
-        }
-      }}
-      onResizeStop={(e, direction, ref, delta, position) => {
+      onDrag={handleDrag}
+      onDragStop={handleDragStop}
+      onResizeStop={(_e, _direction, ref, _delta, position) => {
         if (!win.isMaximized) {
           updateWindowSize(win.id, parseInt(ref.style.width), parseInt(ref.style.height))
           updateWindowPosition(win.id, position.x, position.y)
@@ -51,7 +77,7 @@ export function Window({ window: win, app }: WindowProps) {
       onMouseDown={() => bringToFront(win.id)}
       dragHandleClassName="window-drag-handle"
       disableDragging={win.isMaximized}
-      enableResizing={!win.isMaximized}
+      enableResizing={!win.isMaximized && !win.snapZone}
     >
       <div className={`h-full w-full flex flex-col bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56),inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden ${win.isMaximized ? 'rounded-none' : 'rounded-[10px]'}`}>
         {/* Title Bar with macOS traffic lights */}

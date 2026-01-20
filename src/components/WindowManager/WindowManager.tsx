@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { windows } from '../../stores/windows'
 import { appsQueryOptions } from '../../queries/apps'
 import { Window } from './Window'
+import { SnapPreview } from './SnapPreview'
 
 // Built-in apps that don't come from the database
 const BUILTIN_APPS = {
@@ -33,6 +34,7 @@ export function WindowManager() {
 
   return (
     <>
+      <SnapPreview />
       {visibleWindows.map(win => {
         // Check for built-in apps first
         const builtinApp = BUILTIN_APPS[win.appId as keyof typeof BUILTIN_APPS]
