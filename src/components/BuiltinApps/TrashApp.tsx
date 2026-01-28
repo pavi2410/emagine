@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { ContextMenu } from '@base-ui/react/context-menu'
 import { ScrollArea } from '../ui/ScrollArea'
 import { trashedAppsQueryOptions, useRestoreApp, usePermanentlyDeleteApp, useEmptyTrash, type TrashedApp } from '../../queries/trash'
+import { closeWindowByAppId } from '../../stores/windows'
 
 function formatDeletedDate(deletedAt: string): string {
   const date = new Date(deletedAt)
@@ -60,9 +62,81 @@ function TrashItem({ app }: { app: TrashedApp }) {
 export function TrashApp() {
   const { data: trashedApps = [], isLoading } = useQuery(trashedAppsQueryOptions)
   const emptyTrash = useEmptyTrash()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const isEmpty = trashedApps.length === 0
 
+  const handleClose = () => {
+    closeWindowByAppId('__builtin_trash')
+  }
+
+  // Mobile: iOS-style layout
+  if (isMobile) {
+    return (
+      <div className="h-full flex flex-col bg-[#1c1c1e]">
+        {/* iOS Header */}
+        <div className="flex justify-between items-center px-4 pt-4 pb-2">
+          <h1 className="text-[34px] font-bold text-white">Trash</h1>
+          <button
+            onClick={handleClose}
+            className="text-[17px] text-blue-500 font-semibold"
+          >
+            Done
+          </button>
+        </div>
+
+        {/* Actions */}
+        {!isEmpty && (
+          <div className="px-4 pb-2">
+            <button
+              className="w-full py-2.5 text-[17px] bg-red-500/20 text-red-400 rounded-xl transition-colors disabled:opacity-50"
+              onClick={() => emptyTrash.mutate()}
+              disabled={emptyTrash.isPending}
+            >
+              {emptyTrash.isPending ? 'Emptying...' : 'Empty Trash'}
+            </button>
+          </div>
+        )}
+
+        {/* Content */}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center flex-1">
+            <span className="text-[15px] text-white/40">Loading...</span>
+          </div>
+        ) : isEmpty ? (
+          <div className="flex flex-col items-center justify-center flex-1">
+            <div className="text-5xl mb-3 opacity-40">🗑️</div>
+            <span className="text-[17px] text-white/60 mb-1">Trash is empty</span>
+            <span className="text-[13px] text-white/40">
+              Long-press apps to move them to trash
+            </span>
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto px-4">
+            <div className="bg-[#2c2c2e] rounded-xl overflow-hidden">
+              {trashedApps.map((app, index) => (
+                <div key={app.id} className="relative">
+                  <TrashItem app={app} />
+                  {index < trashedApps.length - 1 && (
+                    <div className="absolute bottom-0 left-14 right-0 h-px bg-white/10" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Desktop: macOS-style layout
   return (
     <div className="h-full flex flex-col bg-black/60 backdrop-blur-2xl">
       {/* Header */}

@@ -153,6 +153,14 @@ export function closeWindow(id: string) {
   windows.set(rest)
 }
 
+export function closeWindowByAppId(appId: string) {
+  const current = windows.get()
+  const windowToClose = Object.values(current).find(w => w.appId === appId)
+  if (windowToClose) {
+    closeWindow(windowToClose.id)
+  }
+}
+
 export function updateWindowPosition(id: string, x: number, y: number) {
   const win = windows.get()[id]
   if (win) {

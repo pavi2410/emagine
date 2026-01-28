@@ -16,10 +16,6 @@ export function DesktopIcon({ app }: DesktopIconProps) {
   const [renameModalOpen, setRenameModalOpen] = useState(false)
   const moveToTrash = useMoveToTrash()
 
-  const handleDoubleClick = () => {
-    openWindow(app.id)
-  }
-
   const handleOpen = () => {
     openWindow(app.id)
   }
@@ -46,7 +42,8 @@ export function DesktopIcon({ app }: DesktopIconProps) {
           className={`flex flex-col items-center gap-2 w-24 cursor-pointer hover:bg-blue-500/25 rounded-lg p-2 transition-colors ${
             hasError ? 'opacity-50' : ''
           }`}
-          onDoubleClick={handleDoubleClick}
+          onClick={handleOpen}
+          onDoubleClick={handleOpen}
         >
           <div className="text-5xl relative drop-shadow-lg">
             {isGenerating ? (
