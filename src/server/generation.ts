@@ -1,9 +1,10 @@
 import { generateText } from 'ai'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import { eq } from 'drizzle-orm'
-import { db, apps, appVersions } from '../db'
+import { db, apps, appVersions, userSettings } from '../db'
 import { saveAppHtml } from './storage'
 import { env } from '../env'
+import { DEFAULT_SYSTEM_PROMPT } from '../queries/settings'
 
 // Server-side OpenRouter client (uses server env var, not client-side)
 const openrouter = createOpenRouter({
@@ -91,7 +92,7 @@ export async function generateApp({
   }).returning()
 
   // Start async generation (don't await)
-  generateAppAsync(app.id, prompt, model).catch((error) => {
+  generateAppAsync(app.id, prompt, model, userId).catch((error) => {
     console.error('Background generation failed:', error)
   })
 
@@ -102,16 +103,30 @@ export async function generateApp({
 }
 
 /**
+ * Get user's system prompt from settings
+ */
+async function getUserSystemPrompt(userId: string): Promise<string> {
+  const settings = await db.query.userSettings.findFirst({
+    where: eq(userSettings.userId, userId),
+  })
+  return settings?.systemPrompt ?? DEFAULT_SYSTEM_PROMPT
+}
+
+/**
  * Async app generation - runs in background
  */
 async function generateAppAsync(
   appId: string,
   prompt: string,
-  model: string
+  model: string,
+  userId: string
 ): Promise<void> {
   const startTime = Date.now()
 
   try {
+    // Get user's system prompt
+    const systemPrompt = await getUserSystemPrompt(userId)
+
     // Step 1: Generate metadata
     const metaPrompt = `You are a JSON generator. Output ONLY valid JSON, no explanation.
 DO NOT wrap in code blocks. DO NOT add commentary.
@@ -146,22 +161,12 @@ Output: {"name": "2-4 word title", "icon": "single emoji", "description": "one s
       })
       .where(eq(apps.id, appId))
 
-    // Step 2: Generate HTML
-    const htmlPrompt = `You are an HTML generator. Output ONLY valid HTML.
+    // Step 2: Generate HTML with system prompt
+    const htmlPrompt = `${systemPrompt}
 
-CRITICAL RULES:
-1. Start with <!DOCTYPE html> - NO text before
-2. End with </html> - NO text after
-3. NO markdown code fences
-4. NO explanations
+---
 
-Requirements:
-- Single file with embedded <style> and <script>
-- Modern UI with CSS grid/flexbox
-- Responsive design, smooth animations
-- No external dependencies (no CDN)
-
-Build: "${prompt}"`
+USER REQUEST: ${prompt}`
 
     const { text: html } = await generateText({
       model: openrouter.chat(model),
@@ -211,27 +216,21 @@ export async function regenerateAppHtml(
   appId: string,
   prompt: string,
   model: string,
-  version: number
+  version: number,
+  userId: string
 ): Promise<void> {
   const startTime = Date.now()
 
   try {
-    // Generate HTML
-    const htmlPrompt = `You are an HTML generator. Output ONLY valid HTML.
+    // Get user's system prompt
+    const systemPrompt = await getUserSystemPrompt(userId)
 
-CRITICAL RULES:
-1. Start with <!DOCTYPE html> - NO text before
-2. End with </html> - NO text after
-3. NO markdown code fences
-4. NO explanations
+    // Generate HTML with system prompt
+    const htmlPrompt = `${systemPrompt}
 
-Requirements:
-- Single file with embedded <style> and <script>
-- Modern UI with CSS grid/flexbox
-- Responsive design, smooth animations
-- No external dependencies (no CDN)
+---
 
-Build: "${prompt}"`
+USER REQUEST: ${prompt}`
 
     const { text: html } = await generateText({
       model: openrouter.chat(model),

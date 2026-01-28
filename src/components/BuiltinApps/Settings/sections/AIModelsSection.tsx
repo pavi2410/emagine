@@ -1,9 +1,32 @@
 import { useQuery } from '@tanstack/react-query'
-import { settingsQueryOptions, useUpdateSettings, AVAILABLE_MODELS, type ModelId } from '../../../../queries/settings'
+import { useState, useEffect } from 'react'
+import { settingsQueryOptions, useUpdateSettings, AVAILABLE_MODELS, DEFAULT_SYSTEM_PROMPT, type ModelId } from '../../../../queries/settings'
 
 export function AIModelsSection() {
   const { data: settings } = useQuery(settingsQueryOptions)
   const updateSettings = useUpdateSettings()
+  const [systemPrompt, setSystemPrompt] = useState('')
+  const [promptSaved, setPromptSaved] = useState(false)
+
+  useEffect(() => {
+    if (settings) {
+      setSystemPrompt(settings.systemPrompt ?? DEFAULT_SYSTEM_PROMPT)
+    }
+  }, [settings])
+
+  const handleSavePrompt = () => {
+    updateSettings.mutate({ systemPrompt }, {
+      onSuccess: () => {
+        setPromptSaved(true)
+        setTimeout(() => setPromptSaved(false), 2000)
+      }
+    })
+  }
+
+  const handleResetPrompt = () => {
+    setSystemPrompt(DEFAULT_SYSTEM_PROMPT)
+    updateSettings.mutate({ systemPrompt: DEFAULT_SYSTEM_PROMPT })
+  }
 
   const currentModel = settings?.selectedModel ? AVAILABLE_MODELS[settings.selectedModel as ModelId] : null
 
@@ -58,6 +81,46 @@ export function AIModelsSection() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* System Prompt */}
+      <div className="bg-slate-800/50 rounded-xl p-5 mb-4">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h3 className="text-base font-medium text-slate-300">
+              System Prompt
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">
+              Instructions for building apps with consistent UI/UX design
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleResetPrompt}
+              className="px-3 py-1.5 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors"
+            >
+              Reset to Default
+            </button>
+            <button
+              onClick={handleSavePrompt}
+              disabled={updateSettings.isPending}
+              className="px-3 py-1.5 text-xs bg-purple-600 hover:bg-purple-500 disabled:bg-slate-700 text-white rounded-lg transition-colors"
+            >
+              {promptSaved ? '✓ Saved' : updateSettings.isPending ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+        </div>
+
+        <textarea
+          value={systemPrompt}
+          onChange={(e) => setSystemPrompt(e.target.value)}
+          className="w-full h-64 px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 font-mono leading-relaxed selectable"
+          placeholder="Enter system prompt for app generation..."
+        />
+
+        <p className="text-xs text-slate-500 mt-2">
+          This prompt guides the AI to follow Apple Human Interface Guidelines for consistent, high-quality app design.
+        </p>
       </div>
 
       {/* Advanced Options */}

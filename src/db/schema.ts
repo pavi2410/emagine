@@ -63,6 +63,8 @@ export const userSettings = pgTable('user_settings', {
   wallpaper: text('wallpaper').default('gradient-purple').notNull(),
   accentColor: text('accent_color').default('purple').notNull(),
   avatar: text('avatar').default('gradient-1').notNull(),
+  // System prompt for app generation
+  systemPrompt: text('system_prompt'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

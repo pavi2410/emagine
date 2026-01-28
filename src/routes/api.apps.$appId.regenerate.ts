@@ -67,7 +67,7 @@ export const Route = createFileRoute('/api/apps/$appId/regenerate')({
         }).where(eq(apps.id, appId))
 
         // Start async regeneration (don't await)
-        regenerateAppHtml(appId, promptToUse, modelToUse, nextVersion)
+        regenerateAppHtml(appId, promptToUse, modelToUse, nextVersion, session.user.id)
           .catch((error) => {
             console.error('Regeneration failed:', error)
           })
