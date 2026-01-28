@@ -47,7 +47,7 @@ export function Desktop() {
     >
       {/* Top Bar */}
       <div
-        className="absolute top-0 left-0 right-0 bg-black/25 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/10 z-50 flex items-center justify-between"
+        className="absolute top-0 left-0 right-0 bg-black/30 backdrop-blur-3xl backdrop-saturate-200 border-b border-white/10 z-50 flex items-center justify-between"
         style={{ height: '28px' }}
       >
         <AppleMenu

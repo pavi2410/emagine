@@ -11,58 +11,64 @@ export function AppearanceSection() {
   }
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-6 text-white">
+    <div className="p-5">
+      <h2 className="text-[13px] font-semibold mb-4 text-white/90">
         Appearance
       </h2>
 
       {/* Wallpaper Selection */}
-      <div className="bg-slate-800/50 rounded-xl p-5 mb-4">
-        <h3 className="text-base font-medium mb-4 text-slate-300">
-          Wallpaper
-        </h3>
-
-        <div className="grid grid-cols-3 gap-3">
-          {WALLPAPERS.map((wallpaper) => {
-            const isSelected = settings?.wallpaper === wallpaper.id
-            return (
-              <button
-                key={wallpaper.id}
-                onClick={() => handleWallpaperChange(wallpaper.id)}
-                className={`aspect-video rounded-lg overflow-hidden transition-all ${
-                  isSelected
-                    ? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-slate-900'
-                    : 'hover:ring-2 hover:ring-slate-500 hover:ring-offset-1 hover:ring-offset-slate-900'
-                }`}
-              >
-                <div
-                  className="w-full h-full"
-                  style={getWallpaperStyle(wallpaper.id)}
-                />
-              </button>
-            )
-          })}
+      <div className="bg-white/5 rounded-lg overflow-hidden mb-3">
+        <div className="px-4 py-2.5 border-b border-white/5">
+          <span className="text-[11px] font-medium text-white/40 uppercase tracking-wide">
+            Wallpaper
+          </span>
         </div>
 
-        <span className="text-xs text-slate-500 mt-3 block">
-          Current: {WALLPAPERS.find(w => w.id === settings?.wallpaper)?.name || 'Deep Purple'}
-        </span>
+        <div className="p-3">
+          <div className="grid grid-cols-3 gap-2">
+            {WALLPAPERS.map((wallpaper) => {
+              const isSelected = settings?.wallpaper === wallpaper.id
+              return (
+                <button
+                  key={wallpaper.id}
+                  onClick={() => handleWallpaperChange(wallpaper.id)}
+                  className={`aspect-video rounded-md overflow-hidden transition-all ${
+                    isSelected
+                      ? 'ring-2 ring-blue-500'
+                      : 'hover:ring-1 hover:ring-white/30'
+                  }`}
+                >
+                  <div
+                    className="w-full h-full"
+                    style={getWallpaperStyle(wallpaper.id)}
+                  />
+                </button>
+              )
+            })}
+          </div>
+
+          <span className="text-[11px] text-white/40 mt-2 block">
+            Current: {WALLPAPERS.find(w => w.id === settings?.wallpaper)?.name || 'Deep Purple'}
+          </span>
+        </div>
       </div>
 
       {/* Theme */}
-      <div className="bg-slate-800/50 rounded-xl p-5">
-        <h3 className="text-base font-medium mb-4 text-slate-300">
-          Theme
-        </h3>
+      <div className="bg-white/5 rounded-lg overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-white/5">
+          <span className="text-[11px] font-medium text-white/40 uppercase tracking-wide">
+            Theme
+          </span>
+        </div>
 
-        <div className="flex justify-between items-center py-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-sm text-white">Dark Mode</span>
-            <span className="text-xs text-slate-500">
+        <div className="px-4 py-3 flex justify-between items-center">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[13px] text-white/90">Dark Mode</span>
+            <span className="text-[11px] text-white/40">
               Currently locked to dark theme
             </span>
           </div>
-          <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-xs font-medium">
+          <span className="bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full text-[11px] font-medium">
             Active
           </span>
         </div>

@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { ContextMenu } from '@base-ui/react/context-menu'
-import { Button } from '../ui/Button'
 import { ScrollArea } from '../ui/ScrollArea'
 import { trashedAppsQueryOptions, useRestoreApp, usePermanentlyDeleteApp, useEmptyTrash, type TrashedApp } from '../../queries/trash'
 
@@ -23,13 +22,13 @@ function TrashItem({ app }: { app: TrashedApp }) {
 
   return (
     <ContextMenu.Root>
-      <ContextMenu.Trigger className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800/50 cursor-default transition-colors w-full">
-        <div className="text-3xl">{app.icon}</div>
-        <div className="flex flex-col flex-1 min-w-0">
-          <span className="text-sm font-medium text-white truncate">
+      <ContextMenu.Trigger className="flex items-center gap-2.5 px-3 py-2 hover:bg-white/5 cursor-default transition-colors w-full">
+        <div className="text-xl">{app.icon}</div>
+        <div className="flex flex-col flex-1 min-w-0 gap-0">
+          <span className="text-[13px] font-medium text-white/90 truncate">
             {app.name}
           </span>
-          <span className="text-xs text-slate-500">
+          <span className="text-[11px] text-white/40">
             Deleted {formatDeletedDate(app.deletedAt)}
           </span>
         </div>
@@ -37,19 +36,19 @@ function TrashItem({ app }: { app: TrashedApp }) {
 
       <ContextMenu.Portal>
         <ContextMenu.Positioner>
-          <ContextMenu.Popup className="min-w-[160px] bg-slate-900/95 backdrop-blur-xl rounded-lg shadow-2xl border border-slate-700/50 py-1.5 z-[9999]">
+          <ContextMenu.Popup className="min-w-[180px] bg-[#2a2a2a]/80 backdrop-blur-3xl backdrop-saturate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.5)] py-1.5 z-9999 border border-white/15">
             <ContextMenu.Item
-              className="px-3 py-2 text-white text-sm cursor-pointer outline-none data-highlighted:bg-blue-500/30 rounded-md mx-1 transition-colors"
+              className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded-sm mx-1"
               onClick={() => restoreApp.mutate(app.id)}
             >
-              Restore
+              Put Back
             </ContextMenu.Item>
-            <ContextMenu.Separator className="h-px bg-slate-700/50 my-1.5" />
+            <ContextMenu.Separator className="h-px bg-white/10 my-1 mx-2" />
             <ContextMenu.Item
-              className="px-3 py-2 text-red-400 text-sm cursor-pointer outline-none data-highlighted:bg-red-500/20 rounded-md mx-1 transition-colors"
+              className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 data-highlighted:text-white rounded-sm mx-1"
               onClick={() => permanentlyDeleteApp.mutate(app.id)}
             >
-              Delete Permanently
+              Delete Immediately
             </ContextMenu.Item>
           </ContextMenu.Popup>
         </ContextMenu.Positioner>
@@ -65,48 +64,44 @@ export function TrashApp() {
   const isEmpty = trashedApps.length === 0
 
   return (
-    <div className="h-full flex flex-col bg-slate-900">
+    <div className="h-full flex flex-col bg-black/60 backdrop-blur-2xl">
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-slate-700/50">
+      <div className="flex justify-between items-center px-4 py-3 border-b border-white/10">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold text-white">
-            Trash
-          </h2>
+          <h2 className="text-[13px] font-semibold text-white/90">Trash</h2>
           {!isEmpty && (
-            <span className="text-sm text-slate-500">
+            <span className="text-[11px] text-white/40">
               {trashedApps.length} {trashedApps.length === 1 ? 'item' : 'items'}
             </span>
           )}
         </div>
         {!isEmpty && (
-          <Button
-            size="1"
-            variant="soft"
-            className="bg-red-500/20 text-red-300 hover:bg-red-500/30"
+          <button
+            className="px-2.5 py-1 text-[11px] bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded transition-colors disabled:opacity-50"
             onClick={() => emptyTrash.mutate()}
             disabled={emptyTrash.isPending}
           >
             {emptyTrash.isPending ? 'Emptying...' : 'Empty Trash'}
-          </Button>
+          </button>
         )}
       </div>
 
       {/* Content */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center flex-1 text-slate-500">
-          <span className="text-base">Loading...</span>
+        <div className="flex flex-col items-center justify-center flex-1">
+          <span className="text-[12px] text-white/40">Loading...</span>
         </div>
       ) : isEmpty ? (
-        <div className="flex flex-col items-center justify-center flex-1 text-slate-500">
-          <div className="text-6xl mb-4 opacity-50">🗑️</div>
-          <span className="text-lg mb-2 text-slate-400">Trash is empty</span>
-          <span className="text-sm text-slate-600">
+        <div className="flex flex-col items-center justify-center flex-1">
+          <div className="text-4xl mb-3 opacity-40">🗑️</div>
+          <span className="text-[13px] text-white/60 mb-1">Trash is empty</span>
+          <span className="text-[11px] text-white/40">
             Right-click apps to move them to trash
           </span>
         </div>
       ) : (
         <ScrollArea className="flex-1">
-          <div className="p-2">
+          <div className="divide-y divide-white/5">
             {trashedApps.map((app) => (
               <TrashItem key={app.id} app={app} />
             ))}

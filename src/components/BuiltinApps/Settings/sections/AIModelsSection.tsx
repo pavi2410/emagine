@@ -31,51 +31,45 @@ export function AIModelsSection() {
   const currentModel = settings?.selectedModel ? AVAILABLE_MODELS[settings.selectedModel as ModelId] : null
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-6 text-white">
+    <div className="p-5">
+      <h2 className="text-[13px] font-semibold mb-4 text-white/90">
         AI Models
       </h2>
 
       {/* Model Selection */}
-      <div className="bg-slate-800/50 rounded-xl p-5 mb-4">
-        <h3 className="text-base font-medium mb-4 text-slate-300">
-          Generation Model
-        </h3>
+      <div className="bg-white/5 rounded-lg overflow-hidden mb-3">
+        <div className="px-4 py-2.5 border-b border-white/5">
+          <span className="text-[11px] font-medium text-white/40 uppercase tracking-wide">
+            Generation Model
+          </span>
+        </div>
 
-        <div className="flex flex-col gap-4">
-          <div>
-            <label className="text-sm text-slate-400 mb-2 block">
-              Select Model
-            </label>
-            <select
-              value={settings?.selectedModel || ''}
-              onChange={(e) => updateSettings.mutate({ selectedModel: e.target.value as ModelId })}
-              className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              {Object.entries(AVAILABLE_MODELS).map(([id, model]) => (
-                <option key={id} value={id}>
-                  {model.name}
-                  {model.supportsTools && ' ⚡'}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="p-3">
+          <select
+            value={settings?.selectedModel || ''}
+            onChange={(e) => updateSettings.mutate({ selectedModel: e.target.value as ModelId })}
+            className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-1.5 text-[13px] text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            {Object.entries(AVAILABLE_MODELS).map(([id, model]) => (
+              <option key={id} value={id}>
+                {model.name}
+                {model.supportsTools && ' ⚡'}
+              </option>
+            ))}
+          </select>
 
-          {/* Model Info Card */}
+          {/* Model Info */}
           {currentModel && (
-            <div className="bg-slate-700/50 rounded-lg p-4">
-              <span className="text-sm font-medium block mb-1 text-white">
+            <div className="mt-2 p-2.5 bg-black/20 rounded-md">
+              <span className="text-[12px] font-medium text-white/80 block">
                 {currentModel.name}
               </span>
-              <span className="text-xs text-slate-400 block mb-1">
-                Provider: {currentModel.provider}
-              </span>
-              <span className="text-xs text-slate-400 block">
-                {currentModel.description}
+              <span className="text-[11px] text-white/50 block">
+                {currentModel.provider} · {currentModel.description}
               </span>
               {currentModel.supportsTools && (
-                <span className="text-xs text-green-400 block mt-2">
-                  ⚡ Supports streaming tools
+                <span className="text-[11px] text-green-400 block mt-1">
+                  ⚡ Supports streaming
                 </span>
               )}
             </div>
@@ -84,69 +78,69 @@ export function AIModelsSection() {
       </div>
 
       {/* System Prompt */}
-      <div className="bg-slate-800/50 rounded-xl p-5 mb-4">
-        <div className="flex justify-between items-start mb-4">
+      <div className="bg-white/5 rounded-lg overflow-hidden mb-3">
+        <div className="px-4 py-2.5 border-b border-white/5 flex justify-between items-center">
           <div>
-            <h3 className="text-base font-medium text-slate-300">
+            <span className="text-[11px] font-medium text-white/40 uppercase tracking-wide block">
               System Prompt
-            </h3>
-            <p className="text-xs text-slate-500 mt-1">
-              Instructions for building apps with consistent UI/UX design
-            </p>
+            </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               onClick={handleResetPrompt}
-              className="px-3 py-1.5 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors"
+              className="px-2 py-1 text-[11px] bg-white/10 hover:bg-white/15 text-white/70 rounded transition-colors"
             >
-              Reset to Default
+              Reset
             </button>
             <button
               onClick={handleSavePrompt}
               disabled={updateSettings.isPending}
-              className="px-3 py-1.5 text-xs bg-purple-600 hover:bg-purple-500 disabled:bg-slate-700 text-white rounded-lg transition-colors"
+              className="px-2.5 py-1 text-[11px] bg-blue-500 hover:bg-blue-400 disabled:bg-white/10 text-white rounded transition-colors"
             >
               {promptSaved ? '✓ Saved' : updateSettings.isPending ? 'Saving...' : 'Save'}
             </button>
           </div>
         </div>
 
-        <textarea
-          value={systemPrompt}
-          onChange={(e) => setSystemPrompt(e.target.value)}
-          className="w-full h-64 px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 font-mono leading-relaxed selectable"
-          placeholder="Enter system prompt for app generation..."
-        />
-
-        <p className="text-xs text-slate-500 mt-2">
-          This prompt guides the AI to follow Apple Human Interface Guidelines for consistent, high-quality app design.
-        </p>
+        <div className="p-3">
+          <textarea
+            value={systemPrompt}
+            onChange={(e) => setSystemPrompt(e.target.value)}
+            className="w-full h-48 px-3 py-2 bg-black/30 border border-white/10 rounded-md text-[12px] text-white placeholder-white/30 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500/50 font-mono leading-relaxed selectable"
+            placeholder="Enter system prompt for app generation..."
+          />
+          <p className="text-[11px] text-white/40 mt-2">
+            Guides the AI to follow Apple Human Interface Guidelines for consistent design.
+          </p>
+        </div>
       </div>
 
       {/* Advanced Options */}
-      <div className="bg-slate-800/50 rounded-xl p-5">
-        <h3 className="text-base font-medium mb-4 text-slate-300">
-          Advanced Options
-        </h3>
+      <div className="bg-white/5 rounded-lg overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-white/5">
+          <span className="text-[11px] font-medium text-white/40 uppercase tracking-wide">
+            Advanced Options
+          </span>
+        </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm text-white">Enable Thinking Display</span>
-              <span className="text-xs text-slate-500">Show AI reasoning process</span>
+        <div className="divide-y divide-white/5">
+          <div className="flex justify-between items-center px-4 py-2.5">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[13px] text-white/90">Thinking Display</span>
+              <span className="text-[11px] text-white/40">Show AI reasoning process</span>
             </div>
-            <span className="bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-semibold">
-              Coming Soon
+            <span className="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px] font-medium">
+              Soon
             </span>
           </div>
 
-          <div className="flex justify-between items-center py-2">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm text-white">Bring Your Own Key (BYOK)</span>
-              <span className="text-xs text-slate-500">Use your own API keys</span>
+          <div className="flex justify-between items-center px-4 py-2.5">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[13px] text-white/90">Bring Your Own Key</span>
+              <span className="text-[11px] text-white/40">Use your own API keys</span>
             </div>
-            <span className="bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-semibold">
-              Coming Soon
+            <span className="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px] font-medium">
+              Soon
             </span>
           </div>
         </div>

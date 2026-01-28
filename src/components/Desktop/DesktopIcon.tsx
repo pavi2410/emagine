@@ -67,31 +67,32 @@ export function DesktopIcon({ app }: DesktopIconProps) {
 
         <ContextMenu.Portal>
           <ContextMenu.Positioner>
-            <ContextMenu.Popup className="min-w-[160px] bg-slate-800/90 backdrop-blur-2xl backdrop-saturate-150 rounded-md shadow-[0_10px_40px_rgba(0,0,0,0.4),inset_0_0_0_0.5px_rgba(255,255,255,0.1)] py-1 z-9999">
+            <ContextMenu.Popup className="min-w-[180px] bg-[#2a2a2a]/80 backdrop-blur-3xl backdrop-saturate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.5)] py-1.5 z-9999 border border-white/15">
               <ContextMenu.Item
-                className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
+                className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 data-disabled:text-white/30 rounded-sm mx-1"
                 onClick={handleOpen}
                 disabled={isGenerating}
               >
                 Open
               </ContextMenu.Item>
+              <ContextMenu.Separator className="h-px bg-white/10 my-1 mx-2" />
               <ContextMenu.Item
-                className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
+                className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 data-disabled:text-white/30 rounded-sm mx-1"
                 onClick={handleRename}
                 disabled={isGenerating}
               >
-                Rename
+                Rename...
               </ContextMenu.Item>
               <ContextMenu.Item
-                className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
+                className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 data-disabled:text-white/30 rounded-sm mx-1"
                 onClick={handleEditRegenerate}
                 disabled={isGenerating}
               >
-                Edit & Regenerate
+                Edit & Regenerate...
               </ContextMenu.Item>
-              <ContextMenu.Separator className="h-px bg-white/10 my-1" />
+              <ContextMenu.Separator className="h-px bg-white/10 my-1 mx-2" />
               <ContextMenu.Item
-                className="px-3 py-1.5 text-red-400 text-[13px] cursor-default outline-none data-highlighted:bg-red-500 data-highlighted:text-white rounded mx-1 transition-colors"
+                className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 data-highlighted:text-white data-disabled:text-white/30 rounded-sm mx-1"
                 onClick={handleMoveToTrash}
                 disabled={isGenerating}
               >

@@ -79,9 +79,9 @@ export function Window({ window: win, app }: WindowProps) {
       disableDragging={win.isMaximized}
       enableResizing={!win.isMaximized && !win.snapZone}
     >
-      <div className={`h-full w-full flex flex-col bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56),inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden ${win.isMaximized ? 'rounded-none' : 'rounded-[10px]'}`}>
+      <div className={`h-full w-full flex flex-col bg-[#1e1e1e]/90 backdrop-blur-3xl backdrop-saturate-150 shadow-[0_22px_70px_4px_rgba(0,0,0,0.56),0_0_0_0.5px_rgba(255,255,255,0.15)] overflow-hidden ${win.isMaximized ? 'rounded-none' : 'rounded-xl'}`}>
         {/* Title Bar with macOS traffic lights */}
-        <div className="window-drag-handle cursor-move shrink-0 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50" onDoubleClick={handleMaximize}>
+        <div className="window-drag-handle cursor-move shrink-0 bg-white/5 backdrop-blur-xl border-b border-white/10" onDoubleClick={handleMaximize}>
           <div className="flex items-center px-4 py-1">
             {/* Traffic Lights */}
             <TrafficLights
@@ -93,8 +93,8 @@ export function Window({ window: win, app }: WindowProps) {
 
             {/* Title */}
             <div className="flex items-center gap-2 flex-1 justify-center">
-              <span className="text-base">{app.icon}</span>
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <span className="text-sm">{app.icon}</span>
+              <span className="text-[13px] font-medium text-white/80">
                 {app.name}
               </span>
             </div>
@@ -105,7 +105,7 @@ export function Window({ window: win, app }: WindowProps) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden bg-white dark:bg-slate-900 min-h-0">
+        <div className="flex-1 overflow-hidden min-h-0">
           {renderAppContent(app)}
         </div>
       </div>

@@ -32,7 +32,7 @@ export function AboutModal({ open, onOpenChange }: AboutModalProps) {
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 }
-                className="pointer-events-auto w-[280px] bg-[#2a2a2c]/95 backdrop-blur-2xl rounded-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56)] overflow-hidden"
+                className="pointer-events-auto w-[280px] bg-[#2a2a2a]/80 backdrop-blur-3xl backdrop-saturate-200 rounded-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56)] border border-white/15 overflow-hidden"
               >
                 {/* macOS-style close button */}
                 <div className="absolute top-3 left-3">

@@ -6,7 +6,7 @@ export function SettingsApp() {
   const [activeSection, setActiveSection] = useState<SettingsSection>('account')
 
   return (
-    <div className="flex h-full bg-slate-900">
+    <div className="flex h-full bg-black/60 backdrop-blur-2xl">
       <SettingsSidebar
         activeSection={activeSection}
         onSectionChange={setActiveSection}

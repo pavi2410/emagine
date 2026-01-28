@@ -75,7 +75,7 @@ export function RenameAppModal({ app, open, onOpenChange }: RenameAppModalProps)
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 }
-                className="pointer-events-auto w-[320px] bg-[#2a2a2c]/95 backdrop-blur-2xl rounded-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56)] overflow-hidden"
+                className="pointer-events-auto w-[320px] bg-[#2a2a2a]/80 backdrop-blur-3xl backdrop-saturate-200 rounded-xl shadow-[0_22px_70px_4px_rgba(0,0,0,0.56)] border border-white/15 overflow-hidden"
               >
               {/* Header - macOS style */}
               <div className="flex items-center justify-center py-3 px-4 border-b border-white/10 relative">

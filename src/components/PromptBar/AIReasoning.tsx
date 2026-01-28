@@ -33,13 +33,13 @@ export function AIReasoning() {
   const hasThinking = thinkingText.length > 0
 
   return (
-    <div className="bg-slate-800/90 backdrop-blur-md rounded-lg p-4 shadow-lg border border-slate-700">
+    <div className="bg-black/40 backdrop-blur-2xl backdrop-saturate-150 rounded-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <span className="text-lg">
             {$streaming.thinking.isActive ? '🤔' : '💭'}
           </span>
-          <span className="text-sm font-medium text-slate-300">
+          <span className="text-[13px] font-medium text-white/80">
             AI Reasoning
           </span>
           {$streaming.thinking.isActive && (

@@ -33,28 +33,28 @@ export function AppleMenu({ onSignOut, onOpenSettings }: AppleMenuProps) {
                       transition={{ duration: 0.12, ease: "easeOut" }}
                     />
                   }
-                  className="min-w-[200px] bg-slate-800/90 backdrop-blur-2xl backdrop-saturate-150 rounded-md shadow-[0_10px_40px_rgba(0,0,0,0.4),inset_0_0_0_0.5px_rgba(255,255,255,0.1)] py-1 z-9999"
+                  className="min-w-[200px] bg-[#2a2a2a]/80 backdrop-blur-3xl backdrop-saturate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.5)] py-1.5 z-9999 border border-white/15"
                 >
                   <Menu.Item
-                    className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
+                    className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded-sm mx-1"
                     onClick={() => setShowAbout(true)}
                   >
-                    About emagine
+                    About Emagine
                   </Menu.Item>
 
-                  <Menu.Separator className="h-px bg-white/10 my-1" />
+                  <Menu.Separator className="h-px bg-white/10 my-1.5 mx-2" />
 
                   <Menu.Item
-                    className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
+                    className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded-sm mx-1"
                     onClick={onOpenSettings}
                   >
                     System Settings...
                   </Menu.Item>
 
-                  <Menu.Separator className="h-px bg-white/10 my-1" />
+                  <Menu.Separator className="h-px bg-white/10 my-1.5 mx-2" />
 
                   <Menu.Item
-                    className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
+                    className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded-sm mx-1"
                     onClick={onSignOut}
                   >
                     Sign Out

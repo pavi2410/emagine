@@ -21,24 +21,27 @@ interface SettingsSidebarProps {
 
 export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSidebarProps) {
   return (
-    <div
-      className="flex flex-col w-[200px] bg-slate-800/50 border-r border-slate-700/50 py-2"
-    >
+    <div className="flex flex-col w-[180px] bg-[#2a2a2a] border-r border-white/10 pt-1 pb-2">
+      <div className="px-3 py-2 mb-1">
+        <span className="text-[11px] font-medium text-white/40 uppercase tracking-wider">
+          Settings
+        </span>
+      </div>
       {SIDEBAR_ITEMS.map((item) => {
         const isActive = activeSection === item.id
         return (
           <button
             key={item.id}
             onClick={() => onSectionChange(item.id)}
-            className={`flex items-center gap-3 px-3 py-2 mx-2 rounded-md text-left transition-colors ${
+            className={`flex items-center gap-2.5 px-3 py-1.5 mx-1.5 rounded-md text-left transition-colors ${
               isActive
-                ? 'bg-white/10'
+                ? 'bg-blue-500/90'
                 : 'hover:bg-white/5'
             }`}
           >
-            <span className="text-lg">{item.icon}</span>
+            <span className="text-base">{item.icon}</span>
             <span
-              className={`text-sm ${isActive ? 'font-medium text-white' : 'text-slate-300'}`}
+              className={`text-[13px] ${isActive ? 'font-medium text-white' : 'text-white/80'}`}
             >
               {item.label}
             </span>
