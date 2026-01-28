@@ -54,7 +54,7 @@ export const verifications = pgTable('verifications', {
 export const userSettings = pgTable('user_settings', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull().unique(),
-  selectedModel: text('selected_model').default('mistralai/devstral-2512:free').notNull(),
+  selectedModel: text('selected_model').default('z-ai/glm-4.5-air:free').notNull(),
   enableThinking: boolean('enable_thinking').default(false).notNull(),
   theme: text('theme').default('dark').notNull(),
   // OOBE tracking

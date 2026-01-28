@@ -11,10 +11,10 @@ export interface UserSettings {
 }
 
 export const AVAILABLE_MODELS = {
-  'mistralai/devstral-2512:free': {
-    name: 'Devstral (Free)',
-    provider: 'Mistral AI',
-    description: 'Code-focused model optimized for development tasks',
+  'z-ai/glm-4.5-air:free': {
+    name: 'GLM-4.5 Air (Free)',
+    provider: 'Zhipu AI',
+    description: 'Fast and capable model from Zhipu AI',
     supportsTools: true
   },
   'xiaomi/mimo-v2-flash:free': {
@@ -34,7 +34,7 @@ export const AVAILABLE_MODELS = {
 export type ModelId = keyof typeof AVAILABLE_MODELS
 
 const DEFAULT_SETTINGS: UserSettings = {
-  selectedModel: 'mistralai/devstral-2512:free',
+  selectedModel: 'z-ai/glm-4.5-air:free',
   enableThinking: false,
   theme: 'dark',
   hasCompletedOOBE: false,

@@ -9,6 +9,7 @@ export interface App {
   prompt?: string
   modelUsed?: string
   generationTimeMs?: number
+  errorMessage?: string
   createdAt: string
   updatedAt: string
 }
@@ -113,7 +114,7 @@ export function subscribeToAppUpdates(
         if (!old) return old
         return old.map((app) =>
           app.id === appId
-            ? { ...app, name: data.name, icon: data.icon, status: data.status }
+            ? { ...app, name: data.name, icon: data.icon, status: data.status, errorMessage: data.errorMessage }
             : app
         )
       })

@@ -33,7 +33,7 @@ export const Route = createFileRoute('/api/apps/$appId/regenerate')({
         }
 
         // Parse request body
-        let body: { prompt?: string } = {}
+        let body: { prompt?: string; model?: string } = {}
         try {
           body = await request.json()
         } catch {
@@ -41,6 +41,7 @@ export const Route = createFileRoute('/api/apps/$appId/regenerate')({
         }
 
         const promptToUse = body.prompt?.trim() || app.prompt
+        const modelToUse = body.model || app.modelUsed || 'z-ai/glm-4.5-air:free'
 
         if (!promptToUse) {
           return new Response(JSON.stringify({ error: 'No prompt available' }), {
@@ -57,14 +58,16 @@ export const Route = createFileRoute('/api/apps/$appId/regenerate')({
 
         const nextVersion = (latestVersion?.version ?? 0) + 1
 
-        // Set status to generating
+        // Set status to generating and update model
         await db.update(apps).set({
           status: 'generating',
+          modelUsed: modelToUse,
+          errorMessage: null,
           updatedAt: new Date(),
         }).where(eq(apps.id, appId))
 
         // Start async regeneration (don't await)
-        regenerateAppHtml(appId, promptToUse, app.modelUsed || 'mistralai/devstral-2512:free', nextVersion)
+        regenerateAppHtml(appId, promptToUse, modelToUse, nextVersion)
           .catch((error) => {
             console.error('Regeneration failed:', error)
           })
