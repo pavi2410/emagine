@@ -98,6 +98,41 @@ export function useDeleteApp() {
   })
 }
 
+export function useUpdateApp() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      appId,
+      name,
+      icon,
+    }: {
+      appId: string
+      name?: string
+      icon?: string
+    }): Promise<{ id: string; name: string; icon: string }> => {
+      const res = await fetch(`/api/apps/${appId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name, icon }),
+      })
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: 'Update failed' }))
+        throw new Error(error.error || 'Update failed')
+      }
+      return res.json()
+    },
+    onSuccess: (data, { appId }) => {
+      queryClient.setQueryData<App[]>(['apps'], (old) =>
+        old?.map((app) =>
+          app.id === appId ? { ...app, name: data.name, icon: data.icon } : app
+        )
+      )
+    },
+  })
+}
+
 export function subscribeToAppUpdates(
   appId: string,
   queryClient: ReturnType<typeof useQueryClient>,

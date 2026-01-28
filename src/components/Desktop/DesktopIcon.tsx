@@ -5,6 +5,7 @@ import type { App } from '../../queries/apps'
 import { openWindow } from '../../stores/windows'
 import { useMoveToTrash } from '../../queries/trash'
 import { EditAppModal } from './EditAppModal'
+import { RenameAppModal } from './RenameAppModal'
 
 interface DesktopIconProps {
   app: App
@@ -12,6 +13,7 @@ interface DesktopIconProps {
 
 export function DesktopIcon({ app }: DesktopIconProps) {
   const [editModalOpen, setEditModalOpen] = useState(false)
+  const [renameModalOpen, setRenameModalOpen] = useState(false)
   const moveToTrash = useMoveToTrash()
 
   const handleDoubleClick = () => {
@@ -28,6 +30,10 @@ export function DesktopIcon({ app }: DesktopIconProps) {
 
   const handleEditRegenerate = () => {
     setEditModalOpen(true)
+  }
+
+  const handleRename = () => {
+    setRenameModalOpen(true)
   }
 
   const isGenerating = app.status === 'generating'
@@ -71,6 +77,13 @@ export function DesktopIcon({ app }: DesktopIconProps) {
               </ContextMenu.Item>
               <ContextMenu.Item
                 className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
+                onClick={handleRename}
+                disabled={isGenerating}
+              >
+                Rename
+              </ContextMenu.Item>
+              <ContextMenu.Item
+                className="px-3 py-1.5 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded mx-1 transition-colors"
                 onClick={handleEditRegenerate}
                 disabled={isGenerating}
               >
@@ -93,6 +106,12 @@ export function DesktopIcon({ app }: DesktopIconProps) {
         app={app}
         open={editModalOpen}
         onOpenChange={setEditModalOpen}
+      />
+
+      <RenameAppModal
+        app={app}
+        open={renameModalOpen}
+        onOpenChange={setRenameModalOpen}
       />
     </>
   )
