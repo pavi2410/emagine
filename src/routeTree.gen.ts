@@ -15,7 +15,9 @@ import { Route as ApiSettingsRouteImport } from './routes/api.settings'
 import { Route as ApiHealthRouteImport } from './routes/api.health'
 import { Route as ApiGenerateRouteImport } from './routes/api.generate'
 import { Route as ApiAppsRouteImport } from './routes/api.apps'
+import { Route as AAppIdRouteImport } from './routes/a.$appId'
 import { Route as ApiTrashAppIdRouteImport } from './routes/api.trash.$appId'
+import { Route as ApiManifestAppIdRouteImport } from './routes/api.manifest.$appId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiAppsAppIdRouteImport } from './routes/api.apps.$appId'
 import { Route as ApiAppsAppIdVersionsRouteImport } from './routes/api.apps.$appId.versions'
@@ -54,10 +56,20 @@ const ApiAppsRoute = ApiAppsRouteImport.update({
   path: '/api/apps',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AAppIdRoute = AAppIdRouteImport.update({
+  id: '/a/$appId',
+  path: '/a/$appId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTrashAppIdRoute = ApiTrashAppIdRouteImport.update({
   id: '/$appId',
   path: '/$appId',
   getParentRoute: () => ApiTrashRoute,
+} as any)
+const ApiManifestAppIdRoute = ApiManifestAppIdRouteImport.update({
+  id: '/api/manifest/$appId',
+  path: '/api/manifest/$appId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -98,6 +110,7 @@ const ApiAppsAppIdVersionsVersionIdRestoreRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a/$appId': typeof AAppIdRoute
   '/api/apps': typeof ApiAppsRouteWithChildren
   '/api/generate': typeof ApiGenerateRoute
   '/api/health': typeof ApiHealthRoute
@@ -105,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/api/trash': typeof ApiTrashRouteWithChildren
   '/api/apps/$appId': typeof ApiAppsAppIdRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/manifest/$appId': typeof ApiManifestAppIdRoute
   '/api/trash/$appId': typeof ApiTrashAppIdRoute
   '/api/apps/$appId/regenerate': typeof ApiAppsAppIdRegenerateRoute
   '/api/apps/$appId/serve': typeof ApiAppsAppIdServeRoute
@@ -114,6 +128,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a/$appId': typeof AAppIdRoute
   '/api/apps': typeof ApiAppsRouteWithChildren
   '/api/generate': typeof ApiGenerateRoute
   '/api/health': typeof ApiHealthRoute
@@ -121,6 +136,7 @@ export interface FileRoutesByTo {
   '/api/trash': typeof ApiTrashRouteWithChildren
   '/api/apps/$appId': typeof ApiAppsAppIdRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/manifest/$appId': typeof ApiManifestAppIdRoute
   '/api/trash/$appId': typeof ApiTrashAppIdRoute
   '/api/apps/$appId/regenerate': typeof ApiAppsAppIdRegenerateRoute
   '/api/apps/$appId/serve': typeof ApiAppsAppIdServeRoute
@@ -131,6 +147,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a/$appId': typeof AAppIdRoute
   '/api/apps': typeof ApiAppsRouteWithChildren
   '/api/generate': typeof ApiGenerateRoute
   '/api/health': typeof ApiHealthRoute
@@ -138,6 +155,7 @@ export interface FileRoutesById {
   '/api/trash': typeof ApiTrashRouteWithChildren
   '/api/apps/$appId': typeof ApiAppsAppIdRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/manifest/$appId': typeof ApiManifestAppIdRoute
   '/api/trash/$appId': typeof ApiTrashAppIdRoute
   '/api/apps/$appId/regenerate': typeof ApiAppsAppIdRegenerateRoute
   '/api/apps/$appId/serve': typeof ApiAppsAppIdServeRoute
@@ -149,6 +167,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a/$appId'
     | '/api/apps'
     | '/api/generate'
     | '/api/health'
@@ -156,6 +175,7 @@ export interface FileRouteTypes {
     | '/api/trash'
     | '/api/apps/$appId'
     | '/api/auth/$'
+    | '/api/manifest/$appId'
     | '/api/trash/$appId'
     | '/api/apps/$appId/regenerate'
     | '/api/apps/$appId/serve'
@@ -165,6 +185,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a/$appId'
     | '/api/apps'
     | '/api/generate'
     | '/api/health'
@@ -172,6 +193,7 @@ export interface FileRouteTypes {
     | '/api/trash'
     | '/api/apps/$appId'
     | '/api/auth/$'
+    | '/api/manifest/$appId'
     | '/api/trash/$appId'
     | '/api/apps/$appId/regenerate'
     | '/api/apps/$appId/serve'
@@ -181,6 +203,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/a/$appId'
     | '/api/apps'
     | '/api/generate'
     | '/api/health'
@@ -188,6 +211,7 @@ export interface FileRouteTypes {
     | '/api/trash'
     | '/api/apps/$appId'
     | '/api/auth/$'
+    | '/api/manifest/$appId'
     | '/api/trash/$appId'
     | '/api/apps/$appId/regenerate'
     | '/api/apps/$appId/serve'
@@ -198,12 +222,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AAppIdRoute: typeof AAppIdRoute
   ApiAppsRoute: typeof ApiAppsRouteWithChildren
   ApiGenerateRoute: typeof ApiGenerateRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiSettingsRoute: typeof ApiSettingsRoute
   ApiTrashRoute: typeof ApiTrashRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiManifestAppIdRoute: typeof ApiManifestAppIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -250,12 +276,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/a/$appId': {
+      id: '/a/$appId'
+      path: '/a/$appId'
+      fullPath: '/a/$appId'
+      preLoaderRoute: typeof AAppIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/trash/$appId': {
       id: '/api/trash/$appId'
       path: '/$appId'
       fullPath: '/api/trash/$appId'
       preLoaderRoute: typeof ApiTrashAppIdRouteImport
       parentRoute: typeof ApiTrashRoute
+    }
+    '/api/manifest/$appId': {
+      id: '/api/manifest/$appId'
+      path: '/api/manifest/$appId'
+      fullPath: '/api/manifest/$appId'
+      preLoaderRoute: typeof ApiManifestAppIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -364,12 +404,14 @@ const ApiTrashRouteWithChildren = ApiTrashRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AAppIdRoute: AAppIdRoute,
   ApiAppsRoute: ApiAppsRouteWithChildren,
   ApiGenerateRoute: ApiGenerateRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiSettingsRoute: ApiSettingsRoute,
   ApiTrashRoute: ApiTrashRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiManifestAppIdRoute: ApiManifestAppIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -5,19 +5,17 @@ import { AboutModal } from './AboutModal'
 
 interface AppleMenuProps {
   onSignOut: () => void
-  onOpenSettings: () => void
 }
 
-export function AppleMenu({ onSignOut, onOpenSettings }: AppleMenuProps) {
+export function AppleMenu({ onSignOut }: AppleMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
 
   return (
     <>
       <Menu.Root open={isOpen} onOpenChange={setIsOpen}>
-        <Menu.Trigger className="px-3 py-0 rounded hover:bg-white/10 transition-colors flex items-center gap-2">
-          <span className="text-lg">✨</span>
-          <span className="text-base font-medium text-white">emagine</span>
+        <Menu.Trigger className="w-8 h-8 rounded-full hover:bg-white/10 transition-colors flex items-center justify-center outline-none">
+          <span className="text-[17px]">✨</span>
         </Menu.Trigger>
 
         <AnimatePresence>
@@ -40,15 +38,6 @@ export function AppleMenu({ onSignOut, onOpenSettings }: AppleMenuProps) {
                     onClick={() => setShowAbout(true)}
                   >
                     About Emagine
-                  </Menu.Item>
-
-                  <Menu.Separator className="h-px bg-white/10 my-1.5 mx-2" />
-
-                  <Menu.Item
-                    className="px-3 py-1 text-white/90 text-[13px] cursor-default outline-none data-highlighted:bg-blue-500 rounded-sm mx-1"
-                    onClick={onOpenSettings}
-                  >
-                    System Settings...
                   </Menu.Item>
 
                   <Menu.Separator className="h-px bg-white/10 my-1.5 mx-2" />

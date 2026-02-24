@@ -1,32 +1,17 @@
-import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Desktop } from './Desktop/Desktop'
-import { MobileDesktop } from './Mobile/MobileDesktop'
-import { MobileWindowManager } from './Mobile/MobileWindowManager'
-import { MobilePromptBar } from './Mobile/MobilePromptBar'
+import { Dashboard } from './Dashboard/Dashboard'
 import { SignInScreen } from './Auth/SignInScreen'
 import { OOBEScreen } from './OOBE/OOBEScreen'
 import { useSession } from '../lib/auth-client'
 import { settingsQueryOptions } from '../queries/settings'
 import { Spinner } from './ui/Spinner'
 
-export function ResponsiveDesktop() {
-  const [isMobile, setIsMobile] = useState(false)
+export function MainLayout() {
   const { data: session, isPending: isSessionPending } = useSession()
   const { data: settings, isPending: isSettingsPending } = useQuery({
     ...settingsQueryOptions,
     enabled: !!session?.user,
   })
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   // Show loading while checking auth
   if (isSessionPending) {
@@ -43,7 +28,7 @@ export function ResponsiveDesktop() {
     )
   }
 
-  // Show sign-in screen if not logged in (macOS-style)
+  // Show sign-in screen if not logged in
   if (!session?.user) {
     return <SignInScreen onSuccess={() => window.location.reload()} />
   }
@@ -73,15 +58,5 @@ export function ResponsiveDesktop() {
     )
   }
 
-  if (isMobile) {
-    return (
-      <>
-        <MobileDesktop />
-        <MobileWindowManager />
-        <MobilePromptBar />
-      </>
-    )
-  }
-
-  return <Desktop />
+  return <Dashboard />
 }

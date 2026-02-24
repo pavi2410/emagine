@@ -49,13 +49,9 @@ export function TutorialStep({ onNext, onBack }: TutorialStepProps) {
 
   const nextSlide = () => {
     if (currentSlide < TUTORIAL_SLIDES.length - 1) {
-      setCurrentSlide((s) => s + 1)
-    }
-  }
-
-  const prevSlide = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide((s) => s - 1)
+      setCurrentSlide(prev => prev + 1)
+    } else {
+      onNext()
     }
   }
 

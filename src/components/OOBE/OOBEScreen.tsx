@@ -103,7 +103,7 @@ export function OOBEScreen({ initialName = '', onComplete }: OOBEScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] overflow-hidden"
+      className="fixed inset-0 z-9999 overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -111,8 +111,9 @@ export function OOBEScreen({ initialName = '', onComplete }: OOBEScreenProps) {
       {/* Animated wallpaper background based on selection */}
       <motion.div
         className="absolute inset-0"
-        initial={false}
-        animate={getWallpaperStyle(data.wallpaper)}
+        initial={{ opacity: 0 }}
+        style={getWallpaperStyle(data.wallpaper)}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       />
 

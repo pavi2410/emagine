@@ -2,13 +2,14 @@ import { useQuery } from '@tanstack/react-query'
 import { ScrollArea } from '../../../ui/ScrollArea'
 import { appsQueryOptions, type App } from '../../../../queries/apps'
 import { useMoveToTrash } from '../../../../queries/trash'
-import { openWindow } from '../../../../stores/windows'
+import { useNavigate } from '@tanstack/react-router'
 
 function AppItem({ app }: { app: App }) {
   const moveToTrash = useMoveToTrash()
+  const navigate = useNavigate()
 
   const handleOpen = () => {
-    openWindow(app.id)
+    navigate({ to: '/a/$appId', params: { appId: app.id } })
   }
 
   const handleDelete = () => {

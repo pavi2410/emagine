@@ -6,7 +6,7 @@ import {
   completeGeneration,
   failGeneration,
 } from '../stores/generation'
-import { openWindow } from '../stores/windows'
+import { useNavigate } from '@tanstack/react-router'
 
 /**
  * Custom hook to manage app generation
@@ -17,6 +17,7 @@ export function useAppGeneration() {
   const { data: apps = [] } = useQuery(appsQueryOptions)
   const { data: settings } = useQuery(settingsQueryOptions)
   const generateAppMutation = useGenerateApp()
+  const navigate = useNavigate()
 
   const generateApp = async (prompt: string) => {
     try {
@@ -27,8 +28,8 @@ export function useAppGeneration() {
         model: settings?.selectedModel,
       })
 
-      // Open window for the new app
-      openWindow(appId)
+      // Navigate to the new app
+      navigate({ to: `/a/$appId`, params: { appId } })
 
       // Subscribe to updates
       subscribeToAppUpdates(appId, queryClient, () => {
