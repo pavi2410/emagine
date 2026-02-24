@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { signIn, signUp } from '../../lib/auth-client'
+import { toast } from 'sonner'
 import { UserAvatar } from './UserAvatar'
 import { getWallpaperStyle } from '../OOBE/data/wallpapers'
 
@@ -43,8 +44,10 @@ export function SignInScreen({ onSuccess }: SignInScreenProps) {
       const result = await signIn.email({ email, password })
       if (result.error) {
         setError(result.error.message || 'Sign in failed')
+        toast.error(result.error.message || 'Sign in failed')
         setIsLoading(false)
       } else {
+        toast.success('Signed in successfully!')
         // Remember user
         localStorage.setItem(REMEMBERED_EMAIL_KEY, email)
         // Trigger unlock animation
@@ -71,8 +74,10 @@ export function SignInScreen({ onSuccess }: SignInScreenProps) {
       const result = await signUp.email({ email, password, name })
       if (result.error) {
         setError(result.error.message || 'Sign up failed')
+        toast.error(result.error.message || 'Sign up failed')
         setIsLoading(false)
       } else {
+        toast.success('Account created successfully!')
         // Remember user
         localStorage.setItem(REMEMBERED_EMAIL_KEY, email)
         localStorage.setItem(REMEMBERED_NAME_KEY, name)
@@ -258,6 +263,7 @@ function SignInForm({
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="w-full bg-white/10 border-white/20"
             />
           </motion.div>
@@ -274,6 +280,7 @@ function SignInForm({
             value={password}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             required
+            autoComplete="current-password"
             className="w-full bg-white/10 border-white/20"
           />
         </motion.div>
@@ -399,6 +406,7 @@ function SignUpForm({
             placeholder="Your name"
             value={name}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            autoComplete="name"
             className="w-full bg-white/10 border-white/20"
           />
         </motion.div>
@@ -414,6 +422,7 @@ function SignUpForm({
             value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             required
+            autoComplete="email"
             className="w-full bg-white/10 border-white/20"
           />
         </motion.div>
@@ -430,6 +439,7 @@ function SignUpForm({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             required
             minLength={8}
+            autoComplete="new-password"
             className="w-full bg-white/10 border-white/20"
           />
         </motion.div>

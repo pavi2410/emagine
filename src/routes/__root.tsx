@@ -41,14 +41,17 @@ export const Route = createRootRoute({
   errorComponent: RootErrorComponent,
 })
 
+import { Toaster } from 'sonner'
+
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body className="bg-slate-950 text-white antialiased">
+      <body className="bg-slate-950 text-white antialiased" suppressHydrationWarning>
         {children}
+        <Toaster theme="dark" position="top-center" />
         <Scripts />
       </body>
     </html>

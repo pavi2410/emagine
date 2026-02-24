@@ -29,6 +29,12 @@ export const AVAILABLE_MODELS = {
     provider: 'Google',
     description: 'Fast and free model from Google',
     supportsTools: true
+  },
+  'openrouter/free': {
+    name: 'Auto Free Model',
+    provider: 'OpenRouter',
+    description: 'Automatically selects from available free models based on request requirements',
+    supportsTools: true
   }
 } as const
 
@@ -77,7 +83,7 @@ export const DEFAULT_SYSTEM_PROMPT = `You are an expert UI/UX designer and front
 - No markdown, no explanations, only valid HTML`
 
 const DEFAULT_SETTINGS: UserSettings = {
-  selectedModel: 'z-ai/glm-4.5-air:free',
+  selectedModel: 'openrouter/free',
   enableThinking: false,
   theme: 'dark',
   hasCompletedOOBE: false,

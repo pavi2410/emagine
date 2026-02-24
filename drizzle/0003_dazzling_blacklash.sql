@@ -1,0 +1,1 @@
+ALTER TABLE "user_settings" ALTER COLUMN "selected_model" SET DEFAULT 'openrouter/free';

@@ -36,7 +36,10 @@ export const Route = createFileRoute('/api/settings')({
           // Create default settings
           const [created] = await db
             .insert(userSettings)
-            .values({ userId: session.user.id })
+            .values({
+              userId: session.user.id,
+              selectedModel: 'openrouter/free'
+            })
             .returning()
           settings = created
         }

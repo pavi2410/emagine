@@ -12,7 +12,7 @@ const openrouter = createOpenRouter({
 })
 
 // Default model
-const DEFAULT_MODEL = 'z-ai/glm-4.5-air:free'
+const DEFAULT_MODEL = 'openrouter/free'
 
 /**
  * Extract HTML from LLM response, handling markdown fences and extra text

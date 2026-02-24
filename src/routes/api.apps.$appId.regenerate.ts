@@ -41,7 +41,7 @@ export const Route = createFileRoute('/api/apps/$appId/regenerate')({
         }
 
         const promptToUse = body.prompt?.trim() || app.prompt
-        const modelToUse = body.model || app.modelUsed || 'z-ai/glm-4.5-air:free'
+        const modelToUse = body.model || app.modelUsed || 'openrouter/free'
 
         if (!promptToUse) {
           return new Response(JSON.stringify({ error: 'No prompt available' }), {
