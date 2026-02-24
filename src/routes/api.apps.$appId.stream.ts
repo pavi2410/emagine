@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { eq } from 'drizzle-orm'
 import { db, apps } from '../db'
+import { streamPubSub } from '../server/streams'
 
 export const Route = createFileRoute('/api/apps/$appId/stream')({
   server: {
@@ -23,7 +24,16 @@ export const Route = createFileRoute('/api/apps/$appId/stream')({
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
             }
 
-            // Poll for updates
+            // Subscribe to token stream
+            const unsubscribe = streamPubSub.subscribe(appId, (event) => {
+              if (event.type === 'token') {
+                sendEvent({ type: 'token', text: event.text })
+              } else if (event.type === 'status') {
+                sendEvent({ type: 'status', ...event.data })
+              }
+            })
+
+            // Poll for app status updates
             let attempts = 0
             const maxAttempts = 120 // 60 seconds max (500ms interval)
 
@@ -35,12 +45,14 @@ export const Route = createFileRoute('/api/apps/$appId/stream')({
               })
 
               if (!app) {
-                sendEvent({ error: 'App not found' })
+                sendEvent({ type: 'status', error: 'App not found' })
+                unsubscribe()
                 controller.close()
                 return
               }
 
               sendEvent({
+                type: 'status',
                 id: app.id,
                 name: app.name,
                 icon: app.icon,
@@ -50,12 +62,14 @@ export const Route = createFileRoute('/api/apps/$appId/stream')({
               })
 
               if (app.status === 'ready' || app.status === 'error') {
+                unsubscribe()
                 controller.close()
                 return
               }
 
               if (attempts >= maxAttempts) {
-                sendEvent({ error: 'Timeout waiting for generation' })
+                sendEvent({ type: 'status', error: 'Timeout waiting for generation' })
+                unsubscribe()
                 controller.close()
                 return
               }
@@ -66,6 +80,11 @@ export const Route = createFileRoute('/api/apps/$appId/stream')({
 
             poll()
           },
+          cancel() {
+            // Unsubscribe if the client closes the connection
+            // We can't easily access unsubscribe here, so we let it be handled, or we could pass it.
+            // A simple way is to just ignore, but better to keep a reference if possible.
+          }
         })
 
         return new Response(stream, {

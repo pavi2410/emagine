@@ -140,29 +140,39 @@ export function subscribeToAppUpdates(
 ): () => void {
   const eventSource = new EventSource(`/api/apps/${appId}/stream`)
 
-  eventSource.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data) as AppStreamUpdate
+  // Import addThinkingDelta to update the stream
+  import('../stores/streaming').then(({ addThinkingDelta }) => {
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data)
 
-      // Update app in cache
-      queryClient.setQueryData<App[]>(['apps'], (old) => {
-        if (!old) return old
-        return old.map((app) =>
-          app.id === appId
-            ? { ...app, name: data.name, icon: data.icon, status: data.status, errorMessage: data.errorMessage }
-            : app
-        )
-      })
+        if (data.type === 'token') {
+          addThinkingDelta(data.text)
+          return
+        }
 
-      // Close connection when done
-      if (data.status === 'ready' || data.status === 'error' || data.error) {
-        eventSource.close()
-        onComplete?.()
+        const appData = data.type === 'status' ? data : data
+
+        // Update app in cache
+        queryClient.setQueryData<App[]>(['apps'], (old) => {
+          if (!old) return old
+          return old.map((app) =>
+            app.id === appId
+              ? { ...app, name: appData.name, icon: appData.icon, status: appData.status, errorMessage: appData.errorMessage }
+              : app
+          )
+        })
+
+        // Close connection when done
+        if (appData.status === 'ready' || appData.status === 'error' || appData.error) {
+          eventSource.close()
+          onComplete?.()
+        }
+      } catch (e) {
+        console.error('Failed to parse SSE message:', e)
       }
-    } catch (e) {
-      console.error('Failed to parse SSE message:', e)
     }
-  }
+  })
 
   eventSource.onerror = () => {
     eventSource.close()
@@ -202,6 +212,9 @@ export function useRegenerateApp() {
       appId: string
       prompt?: string
     }): Promise<{ success: boolean; streamUrl: string }> => {
+      // Start thinking stream on regenerate
+      import('../stores/streaming').then(({ startThinking }) => startThinking())
+      
       const res = await fetch(`/api/apps/${appId}/regenerate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -209,6 +222,7 @@ export function useRegenerateApp() {
         body: JSON.stringify({ prompt }),
       })
       if (!res.ok) {
+        import('../stores/streaming').then(({ endThinking }) => endThinking())
         const error = await res.json().catch(() => ({ error: 'Regeneration failed' }))
         throw new Error(error.error || 'Regeneration failed')
       }
@@ -222,6 +236,9 @@ export function useRegenerateApp() {
         )
       )
     },
+    onError: () => {
+      import('../stores/streaming').then(({ endThinking }) => endThinking())
+    }
   })
 }
 

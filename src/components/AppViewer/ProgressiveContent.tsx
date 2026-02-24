@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useStore } from '@nanostores/react'
 import { Spinner } from '../ui/Spinner'
 import { appsQueryOptions, getAppUrl, useRegenerateApp, subscribeToAppUpdates } from '../../queries/apps'
 import { AVAILABLE_MODELS, type ModelId } from '../../queries/settings'
+import { streaming } from '../../stores/streaming'
 
 interface ProgressiveContentProps {
   appId: string
@@ -19,8 +21,17 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
   const { data: apps = [] } = useQuery(appsQueryOptions)
   const regenerateApp = useRegenerateApp()
   const queryClient = useQueryClient()
+  const $streaming = useStore(streaming)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const app = apps.find((a) => a.id === appId)
+
+  // Auto-scroll the reasoning container
+  useEffect(() => {
+    if (scrollRef.current && app?.status === 'generating') {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [$streaming.thinking.chunks.length, app?.status])
 
   const handleLoad = () => {
     setIsLoading(false)
@@ -36,11 +47,15 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
     
     try {
       setHasError(false)
+      import('../../stores/streaming').then(({ startThinking }) => startThinking())
       await regenerateApp.mutateAsync({ appId, prompt: app.prompt })
       
       // Subscribe to updates for the regenerating app
-      subscribeToAppUpdates(appId, queryClient)
+      subscribeToAppUpdates(appId, queryClient, () => {
+        import('../../stores/streaming').then(({ endThinking }) => endThinking())
+      })
     } catch (err) {
+      import('../../stores/streaming').then(({ endThinking }) => endThinking())
       console.error('Retry failed:', err)
     }
   }
@@ -50,6 +65,8 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
     
     try {
       setHasError(false)
+      import('../../stores/streaming').then(({ startThinking }) => startThinking())
+      
       // Update app's model in the request - need to use a different endpoint or include model
       const res = await fetch(`/api/apps/${appId}/regenerate`, {
         method: 'POST',
@@ -59,6 +76,7 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
       })
       
       if (!res.ok) {
+        import('../../stores/streaming').then(({ endThinking }) => endThinking())
         throw new Error('Regeneration failed')
       }
       
@@ -68,8 +86,11 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
       )
       
       // Subscribe to updates
-      subscribeToAppUpdates(appId, queryClient)
+      subscribeToAppUpdates(appId, queryClient, () => {
+        import('../../stores/streaming').then(({ endThinking }) => endThinking())
+      })
     } catch (err) {
+      import('../../stores/streaming').then(({ endThinking }) => endThinking())
       console.error('Retry with model failed:', err)
     }
   }
@@ -84,14 +105,75 @@ export function ProgressiveContent({ appId }: ProgressiveContentProps) {
     )
   }
 
-  // Show loading state for generating apps
+  // Show beautiful streaming reasoning for generating apps
   if (app.status === 'generating') {
+    const thinkingText = $streaming.thinking.chunks.join('')
+    const hasThinking = thinkingText.length > 0
+    const isThinkingActive = $streaming.thinking.isActive
+
     return (
-      <div className="flex items-center justify-center flex-col gap-3 h-full">
-        <Spinner size="3" />
-        <span className="text-sm text-slate-500">
-          Generating app...
-        </span>
+      <div className="flex items-center justify-center flex-col h-full bg-slate-950 p-6 sm:p-12 relative overflow-hidden">
+        {/* Subtle animated background gradient */}
+          <div className="absolute inset-0 bg-linear-to-br from-purple-900/10 via-slate-900/50 to-indigo-900/10 mix-blend-overlay"></div>
+        <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] animate-[spin_20s_linear_infinite] pointer-events-none"></div>
+
+        <div className="w-full max-w-2xl flex flex-col items-center gap-8 relative z-10">
+          
+          {/* Header */}
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="relative w-16 h-16 flex items-center justify-center">
+              <div className="absolute inset-0 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+              <Spinner size="3" className="text-purple-400 relative z-10 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
+            </div>
+            <div className="flex flex-col gap-2">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-purple-200 via-white to-indigo-200 tracking-tight">
+                Crafting your vision
+              </h2>
+              <p className="text-sm sm:text-base text-slate-400 font-medium">
+                {app.name !== 'Generating...' ? app.name : 'We are building your app. This might take a moment.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Code/Reasoning Window */}
+          <div className="w-full bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/5 shadow-2xl overflow-hidden ring-1 ring-white/10 relative group">
+            {/* Window Controls (Mac style) */}
+            <div className="flex items-center gap-2 px-4 py-3 bg-slate-900 border-b border-white/5">
+              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+              <span className="ml-2 text-xs font-mono text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                generation_stream.log
+              </span>
+            </div>
+
+            {/* Scrolling Content */}
+            <div 
+              ref={scrollRef}
+              className="p-5 h-[300px] overflow-y-auto scroll-smooth font-mono text-[13px] sm:text-sm leading-relaxed"
+            >
+              {hasThinking ? (
+                <div className="flex flex-col gap-1">
+                  {/* Subtle code syntax highlighting effect via CSS */}
+                  <div className="text-emerald-400/90 whitespace-pre-wrap wrap-break-word opacity-90 drop-shadow-[0_0_8px_rgba(52,211,153,0.3)] transition-all duration-300">
+                    {thinkingText}
+                    {isThinkingActive && (
+                      <span className="inline-block w-2.5 h-4 ml-1 bg-purple-400 animate-[pulse_1s_cubic-bezier(0.4,0,0.6,1)_infinite] align-middle shadow-[0_0_10px_rgba(192,132,252,0.8)]" />
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full text-slate-500 opacity-60 italic">
+                  Waiting for generation to begin...
+                </div>
+              )}
+            </div>
+            
+            {/* Bottom fading edge for smoothness */}
+            <div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-slate-900/90 to-transparent pointer-events-none"></div>
+          </div>
+          
+        </div>
       </div>
     )
   }

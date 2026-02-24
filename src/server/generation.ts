@@ -1,10 +1,11 @@
-import { generateText } from 'ai'
+import { generateText, streamText } from 'ai'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import { eq } from 'drizzle-orm'
 import { db, apps, appVersions, userSettings } from '../db'
 import { saveAppHtml } from './storage'
 import { env } from '../env'
 import { DEFAULT_SYSTEM_PROMPT } from '../queries/settings'
+import { streamPubSub } from './streams'
 
 // Server-side OpenRouter client (uses server env var, not client-side)
 const openrouter = createOpenRouter({
@@ -168,15 +169,21 @@ Output: {"name": "2-4 word title", "icon": "single emoji", "description": "one s
 
 USER REQUEST: ${prompt}`
 
-    const { text: html } = await generateText({
+    const { textStream } = await streamText({
       model: openrouter.chat(model),
       prompt: htmlPrompt,
       temperature: 0.4,
       maxOutputTokens: 8000,
     })
 
+    let fullHtml = ''
+    for await (const chunk of textStream) {
+      fullHtml += chunk
+      streamPubSub.publish(appId, { type: 'token', text: chunk })
+    }
+
     // Clean HTML - extract only the HTML content
-    const cleanHtml = extractHtml(html)
+    const cleanHtml = extractHtml(fullHtml)
 
     // Save HTML to S3
     const storagePath = await saveAppHtml(appId, cleanHtml)
@@ -232,15 +239,21 @@ export async function regenerateAppHtml(
 
 USER REQUEST: ${prompt}`
 
-    const { text: html } = await generateText({
+    const { textStream } = await streamText({
       model: openrouter.chat(model),
       prompt: htmlPrompt,
       temperature: 0.4,
       maxOutputTokens: 8000,
     })
 
+    let fullHtml = ''
+    for await (const chunk of textStream) {
+      fullHtml += chunk
+      streamPubSub.publish(appId, { type: 'token', text: chunk })
+    }
+
     // Clean HTML
-    const cleanHtml = extractHtml(html)
+    const cleanHtml = extractHtml(fullHtml)
 
     // Save HTML to S3
     const storagePath = await saveAppHtml(appId, cleanHtml)

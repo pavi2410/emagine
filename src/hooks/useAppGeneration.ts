@@ -6,6 +6,7 @@ import {
   completeGeneration,
   failGeneration,
 } from '../stores/generation'
+import { startThinking, endThinking } from '../stores/streaming'
 import { useNavigate } from '@tanstack/react-router'
 
 /**
@@ -22,6 +23,7 @@ export function useAppGeneration() {
   const generateApp = async (prompt: string) => {
     try {
       startGeneration(prompt)
+      startThinking()
 
       const { appId } = await generateAppMutation.mutateAsync({
         prompt,
@@ -34,10 +36,12 @@ export function useAppGeneration() {
       // Subscribe to updates
       subscribeToAppUpdates(appId, queryClient, () => {
         completeGeneration()
+        endThinking()
       })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       failGeneration(message)
+      endThinking()
       console.error('App generation error:', err)
     }
   }
